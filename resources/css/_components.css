@@ -1,0 +1,29 @@
+@layer components {
+    .custom-input {
+        @apply border-gray-300 focus:border-primary-500 focus:ring-primary-500 rounded-md shadow-sm;
+    }
+
+    .upload-card {
+        @apply border border-dashed border-[#363638] h-[148px] w-[148px] rounded-md flex items-center justify-center cursor-pointer overflow-hidden bg-transparent;
+    }
+
+    .absolute-center {
+        @apply absolute -translate-x-[50%] -translate-y-[50%] top-[50%] left-[47%];
+    }
+
+    .is-active {
+        @apply bg-gray-100 hover:bg-gray-100 text-primary-700;
+    }
+
+    .editor-header {
+        @apply flex items-center flex-wrap gap-x-3 border-t border-l border-r rounded-t border-[#dcdfe6] p-3;
+    }
+
+    .editor-body {
+        @apply border border-[#dcdfe6] rounded rounded-t-none px-4 min-h-[12rem] max-h-[12rem] overflow-y-auto prose max-w-none;
+    }
+
+    .editor-btn {
+        @apply px-2 py-0.5 hover:bg-gray-200 rounded-sm font-bold;
+    }
+}
