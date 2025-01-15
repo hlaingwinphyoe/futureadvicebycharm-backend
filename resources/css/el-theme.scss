@@ -45,6 +45,10 @@
     padding: 6px 15px !important;
 }
 
+.input-round .el-input__inner {
+    color: #141414 !important;
+}
+
 // darkmode css
 html.dark {
     .el-sub-menu__title:hover,

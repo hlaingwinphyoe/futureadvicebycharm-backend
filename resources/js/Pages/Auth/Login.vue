@@ -1,5 +1,5 @@
 <template>
-    <Head title="Login - {{ $page.props.app_name }}" />
+    <Head :title="'Login -' + $page.props.app_name" />
     <div
         class="container mx-auto flex items-center h-screen shadow-sm overflow-y-hidden relative"
     >
@@ -46,7 +46,7 @@
                     style="
                         background-image: url(/imgs/bg.png);
                         background-repeat: no-repeat;
-                        background-size: contain;
+                        background-size: cover;
                         background-position: center;
                     "
                 >
