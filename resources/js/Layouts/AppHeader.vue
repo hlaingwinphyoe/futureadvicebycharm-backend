@@ -23,12 +23,20 @@
             <el-button
                 v-if="theme == 'light'"
                 circle
-                class="mr-6"
+                class="mr-4"
                 @click="darkMode"
+                color="#000"
             >
                 <el-icon><Moon /></el-icon>
             </el-button>
-            <el-button v-else circle class="mr-6" @click="lightMode">
+            <el-button
+                v-else
+                type="warning"
+                circle
+                class="mr-4"
+                @click="lightMode"
+                plain
+            >
                 <el-icon><Sunny /></el-icon>
             </el-button>
             <el-dropdown class="mr-3">
@@ -74,9 +82,9 @@ import {
     Sunny,
     Moon,
 } from "@element-plus/icons-vue";
-import { router, usePage } from "@inertiajs/vue3";
+import { usePage } from "@inertiajs/vue3";
 import moment from "moment";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 
 export default {
     components: {

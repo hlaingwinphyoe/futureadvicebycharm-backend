@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\SystemInfoController;
 use App\Http\Controllers\Admin\ZodiacController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
 
 Route::get('/', function () {
     return redirect()->route('admin.dashboard');
@@ -83,6 +84,15 @@ Route::middleware('auth')->controller(ProfileController::class)->name('profile.'
     Route::get('/profile', 'edit')->name('edit');
     Route::patch('/profile', 'update')->name('update');
     Route::delete('/profile', 'destroy')->name('destroy');
+});
+
+
+Route::get('/page-not-found', function () {
+    return Inertia::render('Error');
+})->name('error');
+
+Route::fallback(function () {
+    return redirect()->route('error');
 });
 
 require __DIR__ . '/auth.php';

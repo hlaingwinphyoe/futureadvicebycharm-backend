@@ -40,6 +40,11 @@
     box-shadow: none !important;
 }
 
+.input-round .el-input__wrapper {
+    border-radius: 50px !important;
+    padding: 6px 15px !important;
+}
+
 // darkmode css
 html.dark {
     .el-sub-menu__title:hover,
