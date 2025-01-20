@@ -47,6 +47,30 @@ class Post extends Model
             $query->where('title', 'like', '%' . request('search') . '%')
                 ->orWhere('desc', 'like', '%' . request('search') . '%');
         }
+
+        if (request('sort')) {
+            switch (request('sort')) {
+                case 'latest':
+                    $query->orderBy('id', 'desc');
+                    break;
+
+                case 'oldest':
+                    $query->orderBy('id', 'asc');
+                    break;
+
+                case 'alphabet-asc':
+                    $query->orderBy('title', 'asc');
+                    break;
+
+                case 'alphabet-desc':
+                    $query->orderBy('title', 'desc');
+                    break;
+
+                default:
+                    $query->orderBy('id', 'desc');
+                    break;
+            }
+        }
     }
 
     // helper function
@@ -54,7 +78,7 @@ class Post extends Model
     {
         return Attribute::make(
             get: function (mixed $value, array $attributes) {
-                return $attributes['poster'] !== null ? '/storage/' . $attributes['poster'] : '/imgs/4.jpg';
+                return $attributes['poster'] !== null ? '/storage/' . $attributes['poster'] : '/logo.png';
             }
         );
     }

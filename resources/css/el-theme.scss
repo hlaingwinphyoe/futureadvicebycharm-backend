@@ -82,3 +82,7 @@ html.dark {
 .el-loading-mask {
     background-color: rgba(229, 231, 235, 0.7);
 }
+
+.el-input__wrapper {
+    --el-input-bg-color: transparent !important;
+}
