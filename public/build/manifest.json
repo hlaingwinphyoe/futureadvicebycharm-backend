@@ -1893,7 +1893,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-Tpu7dhfM.js",
+    "file": "assets/app-Cdt3AY26.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -1975,7 +1975,7 @@
       "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue"
     ],
     "css": [
-      "assets/app-CwuIO6Wf.css"
+      "assets/app-CXJePaGv.css"
     ]
   }
 }

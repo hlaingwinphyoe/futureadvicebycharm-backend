@@ -15,8 +15,10 @@ class MediaService
     protected function saveImage($file, $type)
     {
         // Get file extension
-        $fileNameWithExt = $file->getClientOriginalExtension();
-        $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+        $originalName = $file->getClientOriginalName();
+
+        // Remove the extension
+        $fileName = pathinfo($originalName, PATHINFO_FILENAME);
         $fileNameToStore = $fileName . '_' . time() . '.' . $file->extension();
 
         // Store the file in the 'public/images' folder
