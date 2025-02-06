@@ -56,7 +56,7 @@ class StaffController extends Controller
             'email' => 'nullable|email',
             'phone' => 'nullable|digits_between:5,13',
             'social_link' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {
@@ -99,7 +99,7 @@ class StaffController extends Controller
             'email' => 'nullable|email',
             'phone' => 'nullable|digits_between:5,13',
             'social_link' => 'nullable',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {

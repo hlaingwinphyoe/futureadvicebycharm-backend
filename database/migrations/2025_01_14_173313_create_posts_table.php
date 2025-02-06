@@ -44,14 +44,11 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('taggables', function (Blueprint $table) {
-            $table->foreignId('tag_id');
-            $table->foreignId('taggabble_id');
-            $table->string('taggabble_type');
-
-            $table->primary(['tag_id', 'taggabble_id', 'taggabble_type'], 'tag_id_taggabble_id_type');
-
-            $table->foreign('tag_id')->references('id')->on('tags')->onDelete('cascade')->onUpdate('cascade');
+        Schema::create('post_tags', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('post_id')->constrained()->onDelete('cascade');
+            $table->foreignId('tag_id')->constrained()->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -60,6 +57,9 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('tags');
+        Schema::dropIfExists('categories');
         Schema::dropIfExists('posts');
+        Schema::dropIfExists('post_tags');
     }
 };

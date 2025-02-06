@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
             SystemInfoSeeder::class,
             StatusSeeder::class,
             UserSeeder::class,
-            // PackageSeeder::class,
+            PackageSeeder::class,
             ZodiacSeeder::class,
             PostSeeder::class,
             BankSeeder::class,

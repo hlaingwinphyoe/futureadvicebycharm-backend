@@ -62,15 +62,15 @@
                                 }}</el-tag>
                             </template>
                         </el-table-column>
-                        <!-- <el-table-column label="Description">
+                        <el-table-column label="Tags">
                             <template #default="scope">
                                 <h5
                                     class="font-semibold"
-                                    v-html="scope.row.excerpt"
+                                    v-html="scope.row.tags"
                                 ></h5>
                             </template>
-                        </el-table-column> -->
-                        <el-table-column prop="owner" label="Author" />
+                        </el-table-column>
+                        <!-- <el-table-column prop="owner" label="Author" /> -->
                         <el-table-column
                             prop="created_at"
                             label="Created At"

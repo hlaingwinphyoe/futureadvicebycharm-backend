@@ -48,7 +48,14 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
 
     // Package
     Route::resource('/packages', PackageController::class)->except(['create', 'show', 'edit']);
-    Route::patch('/packages/{package}/change-status', [PackageController::class, 'changeStatus'])->name('packages.change-status');
+    Route::controller(PackageController::class)->prefix('packages')->name('packages.')->group(function () {
+        Route::delete('/{package}/destroy-media', 'destroyMedia')->name('destroy-media');
+        Route::patch('/{package}/change-status', 'changeStatus')->name('change-status');
+
+        // remarks
+        Route::get('/{package}/remarks', 'getRemarks')->name('get-remarks');
+        Route::post('/{package}/add-remarks', 'addRemarks')->name('add-remarks');
+    });
 
     // zodiac
     Route::resource('/zodiacs', ZodiacController::class)->except(['create', 'show', 'edit']);

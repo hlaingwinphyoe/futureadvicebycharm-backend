@@ -5,13 +5,22 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Currency;
 use App\Models\Package;
+use App\Models\Remark;
 use App\Models\User;
+use App\Services\MediaService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PackageController extends Controller
 {
+    private $mediaSvc;
+    public function __construct(MediaService $mediaSvc)
+    {
+        $this->mediaSvc = $mediaSvc;
+    }
+
     public function index()
     {
         $pageSize = request('page_size') ?: 10;
@@ -34,6 +43,7 @@ class PackageController extends Controller
                 'astrologer_id' => $package->astrologer_id,
                 'created_at' => $package->created_at->diffForHumans(),
                 'disabled' => $package->disabled,
+                'image' => $package->media,
             ]);
 
         $astrologers = User::astrologer()->get();
@@ -53,7 +63,8 @@ class PackageController extends Controller
             'price' => 'required|numeric|min:50',
             'th_price' => 'required|numeric|min:0',
             'currency' => 'nullable|numeric|exists:currencies,id',
-            'astrologer' => 'required|numeric|exists:users,id'
+            'astrologer' => 'required|numeric|exists:users,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         $data = DB::transaction(function () use ($request) {
@@ -67,6 +78,19 @@ class PackageController extends Controller
                 'th_currency_id' => $th_currency->id,
                 'astrologer_id' => $request->astrologer,
             ]);
+
+            if ($request->hasFile('image')) {
+                $mediaFormdata = [
+                    'media' => $request->file('image'),
+                    'type' => "package",
+                ];
+
+                $url = $this->mediaSvc->storeMedia($mediaFormdata);
+
+                $package->update([
+                    'image' => $url
+                ]);
+            }
         });
 
         return redirect()->back()->with('success', 'Successfully Created.');
@@ -79,7 +103,8 @@ class PackageController extends Controller
             'price' => 'required|numeric|min:50',
             'th_price' => 'required|numeric|min:0',
             'currency' => 'nullable|numeric|exists:currencies,id',
-            'astrologer' => 'required|numeric|exists:users,id'
+            'astrologer' => 'required|numeric|exists:users,id',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         $data = DB::transaction(function () use ($request, $package) {
@@ -93,6 +118,23 @@ class PackageController extends Controller
                 'th_currency_id' => $th_currency->id,
                 'astrologer_id' => $request->astrologer,
             ]);
+
+            if ($request->hasFile('image')) {
+                // Delete the old image
+                if ($package->image !== null) {
+                    Storage::disk('public')->delete($package->image);
+                }
+                $mediaFormdata = [
+                    'media' => $request->file('image'),
+                    'type' => "package",
+                ];
+
+                $url = $this->mediaSvc->storeMedia($mediaFormdata);
+
+                $package->update([
+                    'image' => $url
+                ]);
+            }
         });
 
         return redirect()->back()->with('success', 'Successfully Updated.');
@@ -109,6 +151,41 @@ class PackageController extends Controller
         });
 
         return redirect()->back()->with('success', 'Successfully Updated.');
+    }
+
+    public function getRemarks($id)
+    {
+        $package = Package::with('remarks')->findOrFail($id);
+        return response()->json([
+            'remarks' => $package->remarks
+        ]);
+    }
+
+    public function addRemarks(Request $request, Package $package)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'is_image' => 'required|boolean'
+        ]);
+        $data = DB::transaction(function () use ($package, $request) {
+            $remark = Remark::create([
+                'name' => $request->name,
+                'is_image' => $request->is_image
+            ]);
+
+            $package->remarks()->attach($remark->id);
+        });
+
+        return redirect()->back()->with('success', 'Remarks added successfully.');
+    }
+
+    public function destroyMedia(Package $package)
+    {
+        $data = DB::transaction(function () use ($package) {
+            Storage::disk('public')->delete($package->image);
+            $package->update(['image' => null]);
+        });
+        return redirect()->back();
     }
 
     public function destroy(Package $package)

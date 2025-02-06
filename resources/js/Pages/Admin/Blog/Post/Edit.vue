@@ -47,7 +47,7 @@
                             :message="$page.props.errors.image"
                         />
                     </el-form-item>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid lg:grid-cols-3 gap-4">
                         <el-form-item
                             label="Title"
                             prop="title"
@@ -92,6 +92,26 @@
                                 :message="$page.props.errors.category"
                             />
                         </el-form-item>
+                        <el-form-item label="Tags">
+                            <el-select
+                                v-model="form.tags"
+                                multiple
+                                filterable
+                                allow-create
+                                collapse-tags
+                                collapse-tags-tooltip
+                                :max-collapse-tags="5"
+                                default-first-option
+                                placeholder="Select or create tags"
+                            >
+                                <el-option
+                                    v-for="item in tags"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.slug"
+                                />
+                            </el-select>
+                        </el-form-item>
                     </div>
                     <div class="mb-5">
                         <p class="mb-1.5">Description</p>
@@ -129,7 +149,7 @@ import { Back } from "@element-plus/icons-vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { ElMessage } from "element-plus";
 export default {
-    props: ["categories", "post"],
+    props: ["categories", "post", "tags"],
     components: {
         AuthenticatedLayout,
         InputError,
@@ -145,6 +165,9 @@ export default {
                 title: props.post.title ?? "",
                 category: props.post.category_id ?? "",
                 desc: props.post.desc ?? "",
+                tags: props.post
+                    ? props.post.tags.map((a) => a.slug)
+                    : [],
             },
             backurl: usePage().props.previous,
         });
@@ -176,6 +199,7 @@ export default {
                     state.isLoading = true;
                     state.virtualForm.append("title", state.form.title);
                     state.virtualForm.append("category", state.form.category);
+                    state.virtualForm.append("tags", state.form.tags);
                     state.virtualForm.append("desc", state.form.desc);
                     state.virtualForm.append("_method", "patch");
                     router.post(

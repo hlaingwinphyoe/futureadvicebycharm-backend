@@ -47,7 +47,7 @@ class BankController extends Controller
             'acc_name' => 'required|string',
             'acc_no' => 'required|string',
             'type' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         DB::transaction(function () use ($request) {
@@ -80,7 +80,7 @@ class BankController extends Controller
             'acc_name' => 'required|string',
             'acc_no' => 'required|string',
             'type' => 'required|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         DB::transaction(function () use ($request, $bank) {

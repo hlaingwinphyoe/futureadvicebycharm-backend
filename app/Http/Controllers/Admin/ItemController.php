@@ -60,7 +60,7 @@ class ItemController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
             'th_price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:1024'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {
@@ -105,7 +105,7 @@ class ItemController extends Controller
             'name' => 'required|string',
             'price' => 'required|numeric|min:0',
             'th_price' => 'required|numeric|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {
@@ -162,8 +162,10 @@ class ItemController extends Controller
 
     public function destroyMedia(Item $item)
     {
-        Storage::disk('public')->delete($item->image);
-        $item->update(['image' => null]);
+        $data = DB::transaction(function () use ($item) {
+            Storage::disk('public')->delete($item->image);
+            $item->update(['image' => null]);
+        });
         return redirect()->back();
     }
 

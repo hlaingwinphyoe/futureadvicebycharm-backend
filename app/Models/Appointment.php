@@ -28,6 +28,11 @@ class Appointment extends Model
         return $this->hasMany(AppointmentPackage::class, 'appointment_id', 'id');
     }
 
+    public function remarks()
+    {
+        return $this->morphToMany(Remark::class, 'remarkable');
+    }
+
     public function getPackageNames()
     {
         $name = '';

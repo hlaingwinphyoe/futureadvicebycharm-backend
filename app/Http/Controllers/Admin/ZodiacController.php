@@ -45,7 +45,7 @@ class ZodiacController extends Controller
             'name' => 'required|string|unique:zodiacs,name',
             'period' => 'required|string',
             'desc' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {
@@ -84,7 +84,7 @@ class ZodiacController extends Controller
             'name' => 'required|string|unique:zodiacs,name,' . $zodiac->id,
             'period' => 'required|string',
             'desc' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {

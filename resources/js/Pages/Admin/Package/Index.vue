@@ -36,6 +36,16 @@
                         :default-sort="{ prop: 'id', order: 'descending' }"
                     >
                         <el-table-column prop="id" label="ID" sortable />
+                        <el-table-column label="Image">
+                            <template #default="scope">
+                                <img
+                                    v-if="scope.row.image != ''"
+                                    :src="scope.row.image"
+                                    class="h-10 object-cover rounded-md"
+                                    :alt="scope.row.name"
+                                />
+                            </template>
+                        </el-table-column>
                         <el-table-column label="Name" sortable>
                             <template #default="scope">
                                 <h5 class="font-semibold">
@@ -55,11 +65,11 @@
                                 >
                             </template>
                         </el-table-column>
-                        <el-table-column
+                        <!-- <el-table-column
                             prop="astrologer"
                             label="Astrologer"
                             sortable
-                        />
+                        /> -->
                         <el-table-column
                             prop="created_at"
                             label="Created At"
@@ -78,6 +88,19 @@
                         </el-table-column>
                         <el-table-column label="Actions">
                             <template #default="scope">
+                                <el-tooltip
+                                    class="box-item"
+                                    content="Add Remarks"
+                                    placement="top"
+                                >
+                                    <el-button
+                                        circle
+                                        style="margin-bottom: 5px"
+                                        @click="addRemarks(scope.row)"
+                                    >
+                                        <el-icon><ChatLineRound /></el-icon>
+                                    </el-button>
+                                </el-tooltip>
                                 <el-tooltip
                                     class="box-item"
                                     content="Edit"
@@ -132,6 +155,12 @@
             :astrologers="astrologers"
             :currencies="currencies"
         />
+        <RemarkDialog
+            :show="showRemarkDialog"
+            @closed="closeDialog"
+            :title="remarkDialog.dialogTitle"
+            :data="remarkDialog.dialogData"
+        />
     </AuthenticatedLayout>
 </template>
 
@@ -141,7 +170,15 @@ import { router } from "@inertiajs/vue3";
 import debounce from "lodash.debounce";
 import { reactive, toRefs, watch } from "vue";
 import Dialog from "./Dialog.vue";
-import { Plus, Edit, Refresh, Filter, Delete } from "@element-plus/icons-vue";
+import RemarkDialog from "./RemarkDialog.vue";
+import {
+    Plus,
+    Edit,
+    Refresh,
+    Filter,
+    Delete,
+    ChatLineRound,
+} from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
@@ -154,12 +191,19 @@ export default {
         Refresh,
         Filter,
         Delete,
+        ChatLineRound,
+        RemarkDialog,
     },
     setup() {
         const state = reactive({
             showDialog: false,
+            showRemarkDialog: false,
             isLoading: false,
             dialog: {
+                dialogTitle: "",
+                dialogData: {},
+            },
+            remarkDialog: {
                 dialogTitle: "",
                 dialogData: {},
             },
@@ -179,6 +223,12 @@ export default {
         const onCurrentChange = (val) => {
             state.param.page = val;
             getData();
+        };
+
+        const addRemarks = (row) => {
+            state.remarkDialog.dialogTitle = "Add Remarks";
+            state.remarkDialog.dialogData = JSON.parse(JSON.stringify(row));
+            state.showRemarkDialog = true;
         };
 
         const addNew = () => {
@@ -280,6 +330,7 @@ export default {
 
         const closeDialog = () => {
             state.showDialog = false;
+            state.showRemarkDialog = false;
         };
 
         const reset = () => {
@@ -296,6 +347,7 @@ export default {
             closeDialog,
             reset,
             changeStatus,
+            addRemarks,
         };
     },
 };
