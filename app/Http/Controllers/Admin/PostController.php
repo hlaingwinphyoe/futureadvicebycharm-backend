@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Post;
+use App\Models\Tag;
 use App\Services\MediaService;
+use App\Services\PostService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,9 +18,11 @@ use Illuminate\Support\Str;
 class PostController extends Controller
 {
     private $mediaSvc;
-    public function __construct(MediaService $mediaSvc)
+    private $postSvc;
+    public function __construct(MediaService $mediaSvc, PostService $postSvc)
     {
         $this->mediaSvc = $mediaSvc;
+        $this->postSvc = $postSvc;
     }
 
     public function index()
@@ -35,7 +39,7 @@ class PostController extends Controller
                 'id' => $post->id,
                 'title' => $post->title,
                 'cate_name' => $post->category ? $post->category->name : '',
-                'category_id' => $post->category_id,
+                'tags' => $post->getTags(),
                 'excerpt' => $post->excerpt,
                 'desc' => $post->desc,
                 'is_published' => $post->is_published,
@@ -54,8 +58,10 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::orderBy('name', 'asc')->get();
+        $tags = Tag::orderBy('name', 'asc')->get();
         return Inertia::render('Admin/Blog/Post/Create', [
-            'categories' => $categories
+            'categories' => $categories,
+            'tags' => $tags
         ]);
     }
 
@@ -65,7 +71,7 @@ class PostController extends Controller
             'title' => 'required|string|min:3',
             'category' => 'required|numeric|exists:categories,id',
             'desc' => 'required|string|min:10',
-            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
         ]);
 
         try {
@@ -75,7 +81,7 @@ class PostController extends Controller
                 'title' => $request->title,
                 'desc' => $request->desc,
                 'category_id' => $request->category,
-                'excerpt' => Str::words($request->desc, 50),
+                'excerpt' => Str::words($request->desc, 100),
                 'user_id' => Auth::id(),
             ]);
 
@@ -104,32 +110,30 @@ class PostController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::orderBy('name', 'asc')->get();
+        $tags = Tag::orderBy('name', 'asc')->get();
         return Inertia::render('Admin/Blog/Post/Edit', [
-            'post' => $post,
-            'categories' => $categories
+            'post' => $post->load('tags'),
+            'categories' => $categories,
+            'tags' => $tags
         ]);
     }
 
-    public function update(Request $request, Post $post)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'title' => 'required|string|min:3',
             'category' => 'required|numeric|exists:categories,id',
             'desc' => 'required|string|min:10',
-            'poster' => 'nullable'
+            'poster' => 'nullable',
+            'tags' => 'required|string'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $post->update([
-                'title' => $request->title,
-                'desc' => $request->desc,
-                'category_id' => $request->category,
-                'excerpt' => Str::words($request->desc, 50),
-                'user_id' => Auth::id(),
-            ]);
+            $post = Post::findOrFail($id);
 
+            $post = $this->postSvc->update($post, $request->all());
             if ($request->hasFile('poster')) {
                 // Delete the old image
                 if ($post->poster !== null) {

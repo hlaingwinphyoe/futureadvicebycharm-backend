@@ -22,8 +22,8 @@ class PostFactory extends Factory
         return [
             'title' => $title = fake()->sentence(1),
             'slug' => Str::slug($title),
-            'desc' => $desc = fake()->paragraph(),
-            'excerpt' => Str::excerpt($desc),
+            'desc' => $desc = fake()->paragraph(20),
+            'excerpt' => Str::words($desc, 100),
             'category_id' => Category::all()->random()->id,
             'user_id' => User::astrologer()->get()->random()->id,
             'created_at' => fake()->dateTimeBetween('-3 month', 'now'),

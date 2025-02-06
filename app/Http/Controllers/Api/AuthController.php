@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use App\Models\LoginLog;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -52,21 +53,87 @@ class AuthController extends Controller
             ->orWhere('phone', $request->credentials)
             ->orWhere('email', $request->credentials)
             ->first();
-
-        if ($user->tokens()->where('tokenable_id', $user->id)->exists()) {
-            $user->tokens()->delete();
+        if ($user == null) {
+            return [
+                'status' => false,
+                'code' => 403,
+                'message' => "User not found."
+            ];
         }
 
-        if (!$user || !Hash::check($request->password, $user->password)) {
+        if (!Hash::check($request->password, $user->password)) {
             return response()->json([
-                'message' => 'These Credentials do not match.'
+                'message' => 'These Credentials do not match our records.'
             ], 422);
         }
 
-        $token = $user->createToken('access_token')->plainTextToken;
+        $userAgent = $request->server('HTTP_USER_AGENT');
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+
+        $agent = new \Jenssegers\Agent\Agent;
+        $device = "";
+        if ($agent->isDesktop()) {
+            $device = "Desktop";
+        } else if ($agent->isMobile()) {
+            $device = "Mobile";
+        } else if ($agent->isTablet()) {
+            $device = "Tablet";
+        }
+        $browser = $agent->browser();
+        $platform = $agent->platform();
+        LoginLog::create([
+            'agent' => $userAgent,
+            'device' => $device ? $device : null,
+            'browser' => $browser ? $browser : null,
+            'platform' => $platform ? $platform : null,
+            'ip_address' => $ipAddress,
+            'user_id' => $user->id
+        ]);
+
+        $user->tokens()->where('name', $device)->delete();
+
+        $accessToken = $user->createToken($device, ['*'], now()->addHours(1))->plainTextToken;
+        $refreshToken = $user->createToken($device . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
+
         return response()->json([
-            'token' => $token,
+            'access_token' => $accessToken,
+            'refresh_token' => $refreshToken,
             'user' =>  new UserResource($user)
+        ], 200);
+    }
+
+    public function refreshToken(Request $request)
+    {
+        $request->validate([
+            'refresh_token' => 'required'
+        ]);
+
+        $user = $request->user();
+
+        foreach ($user->tokens as $token) {
+            $token->revoke();
+            $token->delete();
+        }
+
+        $agent = new \Jenssegers\Agent\Agent;
+        $device = "";
+        if ($agent->isDesktop()) {
+            $device = "Desktop";
+        } else if ($agent->isMobile()) {
+            $device = "Mobile";
+        } else if ($agent->isTablet()) {
+            $device = "Tablet";
+        }
+
+        // Generate a new token
+        $newAccessToken = $user->createToken(
+            $device,
+            ['*'],
+            now()->addHours(1)
+        );
+
+        return response()->json([
+            'access_token' => $newAccessToken,
         ], 200);
     }
 

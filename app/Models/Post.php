@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Sluggable\HasSlug;
@@ -34,6 +35,11 @@ class Post extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'post_tags');
+    }
+
     // scope function
 
     public function scopePublished($query)
@@ -46,6 +52,12 @@ class Post extends Model
         if (request('search')) {
             $query->where('title', 'like', '%' . request('search') . '%')
                 ->orWhere('desc', 'like', '%' . request('search') . '%');
+        }
+
+        if (request('category')) {
+            $query->whereHas('category', function ($q) {
+                $q->where('slug', request('category'));
+            });
         }
 
         if (request('sort')) {
@@ -90,5 +102,17 @@ class Post extends Model
                 return $attributes['user_id'] === Auth::id() ? "Me" : $this->user->name ?? '-';
             }
         );
+    }
+
+    public function getTags()
+    {
+        $name = '';
+
+        foreach ($this->tags as $tag) {
+            $name .= $name ? ', ' : '';
+            $name .= $tag->name;
+        }
+
+        return $name;
     }
 }

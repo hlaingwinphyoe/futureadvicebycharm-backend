@@ -27,6 +27,24 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('astrologer_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('th_currency_id')->references('id')->on('currencies')->onDelete('cascade');
+        });
+
+        Schema::create('remarks', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('is_image')->default(false);
+            $table->timestamps();
+        });
+
+        Schema::create('remarkables', function (Blueprint $table) {
+            $table->foreignId('remark_id');
+            $table->foreignId('remarkable_id');
+            $table->string('remarkable_type');
+
+            $table->primary(['remark_id', 'remarkable_id', 'remarkable_type'], 'remark_id_remarkable_id_type');
+
+            $table->foreign('remark_id')->references('id')->on('remarks')->onDelete('cascade')->onUpdate('cascade');
         });
 
         Schema::create('items', function (Blueprint $table) {
@@ -48,6 +66,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('type_id')->references('id')->on('statuses')->onDelete('cascade');
+            $table->foreign('th_currency_id')->references('id')->on('currencies')->onDelete('cascade');
         });
     }
 
@@ -57,6 +76,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('packages');
+        Schema::dropIfExists('package_remarks');
         Schema::dropIfExists('items');
     }
 };

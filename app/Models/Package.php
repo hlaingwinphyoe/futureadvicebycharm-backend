@@ -2,9 +2,11 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -37,11 +39,30 @@ class Package extends Model
         return $this->belongsTo(Currency::class, 'th_currency_id');
     }
 
+    public function remarks()
+    {
+        return $this->morphToMany(Remark::class, 'remarkable');
+    }
+
     // scope function
     public function scopeFilterOn($query)
     {
         if (request('search')) {
             $query->where('name', 'like', '%' . request('search') . '%');
         }
+    }
+
+    public function scopePublished($query)
+    {
+        $query->where('disabled', 0);
+    }
+
+    protected function media(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $attributes['image'] !== null ? '/storage/' . $attributes['image'] : '';
+            }
+        );
     }
 }

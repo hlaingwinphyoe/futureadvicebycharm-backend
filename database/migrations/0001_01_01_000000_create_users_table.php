@@ -121,6 +121,17 @@ return new class extends Migration
 
             $table->foreign('date_id')->references('id')->on('dates')->onDelete('cascade');
         });
+
+        Schema::create('login_logs', function (Blueprint $table) {
+            $table->id();
+            $table->string('agent')->nullable();
+            $table->string('device')->nullable()->default(null);
+            $table->string('browser')->nullable()->default(null);
+            $table->string('platform')->nullable()->default(null);
+            $table->string('ip_address')->nullable()->default(null);
+            $table->integer('user_id')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -137,5 +148,6 @@ return new class extends Migration
         Schema::dropIfExists('dates');
         Schema::dropIfExists('dateables');
         Schema::dropIfExists('banks');
+        Schema::dropIfExists('login_logs');
     }
 };
