@@ -144,4 +144,13 @@ class AuthController extends Controller
         }
         return response()->json(['Successfully logout.']);
     }
+
+    public function getUser(Request $request)
+    {
+        $user = $request->user();
+
+        $user = new UserResource($user);
+
+        return $user;
+    }
 }

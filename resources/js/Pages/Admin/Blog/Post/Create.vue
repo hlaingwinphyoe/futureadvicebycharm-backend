@@ -44,10 +44,10 @@
                         </div>
                         <InputError
                             class="mt-2"
-                            :message="$page.props.errors.image"
+                            :message="$page.props.errors.poster"
                         />
                     </el-form-item>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-3 gap-4">
                         <el-form-item
                             label="Title"
                             prop="title"
@@ -92,6 +92,26 @@
                                 :message="$page.props.errors.category"
                             />
                         </el-form-item>
+                        <el-form-item label="Tags">
+                            <el-select
+                                v-model="form.tags"
+                                multiple
+                                filterable
+                                allow-create
+                                collapse-tags
+                                collapse-tags-tooltip
+                                :max-collapse-tags="5"
+                                default-first-option
+                                placeholder="Select or create tags"
+                            >
+                                <el-option
+                                    v-for="item in tags"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="item.slug"
+                                />
+                            </el-select>
+                        </el-form-item>
                     </div>
                     <div class="mb-5">
                         <p class="mb-1.5">Description</p>
@@ -129,7 +149,7 @@ import { Back } from "@element-plus/icons-vue";
 import { router } from "@inertiajs/vue3";
 import { ElMessage } from "element-plus";
 export default {
-    props: ["categories"],
+    props: ["categories", "tags"],
     components: {
         AuthenticatedLayout,
         InputError,
@@ -145,6 +165,7 @@ export default {
                 title: "",
                 category: "",
                 desc: "",
+                tags: [],
             },
         });
 
@@ -176,6 +197,7 @@ export default {
                     state.virtualForm.append("title", state.form.title);
                     state.virtualForm.append("category", state.form.category);
                     state.virtualForm.append("desc", state.form.desc);
+                    state.virtualForm.append("tags", state.form.tags);
                     router.post(route("admin.posts.store"), state.virtualForm, {
                         onSuccess: (page) => {
                             ElMessage.success(page.props.flash.success);
@@ -195,6 +217,7 @@ export default {
             state.form.title = "";
             state.form.category = "";
             state.form.desc = "";
+            state.form.tags = [];
             state.imgSrc = "";
             state.virtualForm = new FormData();
             state.isLoading = false;
