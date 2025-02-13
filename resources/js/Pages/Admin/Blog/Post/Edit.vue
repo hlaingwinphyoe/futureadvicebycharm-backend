@@ -44,7 +44,7 @@
                         </div>
                         <InputError
                             class="mt-2"
-                            :message="$page.props.errors.image"
+                            :message="$page.props.errors.poster"
                         />
                     </el-form-item>
                     <div class="grid lg:grid-cols-3 gap-4">

@@ -15,7 +15,7 @@ class PostController extends Controller
             $page_size = $request->page_size ? $request->page_size : 12;
             $latestPostId = Post::latest('created_at')->first()->id;
             $posts = Post::query()
-                ->with('user', 'category')
+                ->with('user', 'category', 'tags')
                 ->where('id', '!=', $latestPostId)
                 ->filterOn()
                 ->published()
@@ -34,7 +34,7 @@ class PostController extends Controller
     public function getPost($slug)
     {
         try {
-            $post = Post::with('user', 'category')
+            $post = Post::with('user', 'category', 'tags')
                 ->where('slug', $slug)
                 ->first();
 
@@ -48,7 +48,7 @@ class PostController extends Controller
     public function getTodaySpecial()
     {
         try {
-            $post = Post::with('user', 'category')
+            $post = Post::with('user', 'category', 'tags')
                 ->orderBy('id', 'desc')
                 ->first();
 

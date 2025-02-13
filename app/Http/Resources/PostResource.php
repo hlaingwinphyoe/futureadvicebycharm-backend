@@ -21,6 +21,7 @@ class PostResource extends JsonResource
             'excerpt' => $this->excerpt,
             'desc' => $this->desc,
             'category' => new CategoryResource($this->whenLoaded('category')),
+            'tags' => TagResource::collection($this->whenLoaded('tags')),
             'author_id' => $this->user_id,
             'author' => $this->owner,
             'published_at' => $this->created_at->diffForHumans(),

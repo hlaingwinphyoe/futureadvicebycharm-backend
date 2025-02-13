@@ -71,19 +71,14 @@ class PostController extends Controller
             'title' => 'required|string|min:3',
             'category' => 'required|numeric|exists:categories,id',
             'desc' => 'required|string|min:10',
-            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:10240',
+            'tags' => 'required|string'
         ]);
 
         try {
             DB::beginTransaction();
 
-            $post = Post::create([
-                'title' => $request->title,
-                'desc' => $request->desc,
-                'category_id' => $request->category,
-                'excerpt' => Str::words($request->desc, 100),
-                'user_id' => Auth::id(),
-            ]);
+            $post = $this->postSvc->store($request->all());
 
             if ($request->hasFile('poster')) {
                 $mediaFormdata = [
@@ -124,7 +119,7 @@ class PostController extends Controller
             'title' => 'required|string|min:3',
             'category' => 'required|numeric|exists:categories,id',
             'desc' => 'required|string|min:10',
-            'poster' => 'nullable',
+            'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:10240',
             'tags' => 'required|string'
         ]);
 
