@@ -30,7 +30,7 @@ class UserResource extends JsonResource
             'profile' => $this->profile_photo_path ? asset('storage/' . $this->profile_photo_path) : null,
             'role_id' => $this->role_id,
             'role' => $this->role->name,
-            'created_at' => $this->created_at->format('d M, Y')
+            'created_at' => $this->created_at->format('d M, Y'),
         ];
     }
 }

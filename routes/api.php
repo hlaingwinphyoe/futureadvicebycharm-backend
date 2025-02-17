@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\AppointmentController;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\FrontController;
 use App\Http\Controllers\Api\PostController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,9 +40,17 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
         Route::post('/logout', 'logout');
     });
 
-    Route::controller(AppointmentController::class)->prefix('appointment')->group(function () {
+    Route::controller(AppointmentController::class)->prefix('appointments')->group(function () {
         Route::post('/store', 'makeAppointment');
         Route::get('/{appointment_no}', 'getAppointment');
         Route::post('/{appointment_no}/payment/store', 'paymentStore');
+        Route::get('/users/{id}/bookings', 'getBookings');
+    });
+
+    // account user
+    Route::controller(UserController::class)->prefix('users')->group(function () {
+        Route::patch('/info/update', 'updateInfo');
+        Route::patch('/password/update', 'updatePassword');
+        Route::post('/avatar/upload', 'uploadAvatar');
     });
 });
