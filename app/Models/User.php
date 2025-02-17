@@ -78,6 +78,11 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'role_id');
     }
 
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
+
     protected function profile(): Attribute
     {
         return Attribute::make(

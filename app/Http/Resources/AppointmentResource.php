@@ -26,14 +26,15 @@ class AppointmentResource extends JsonResource
             'transaction_image' => $this->transaction_image ? asset('storage/' . $this->transaction_image) : null,
             'transaction_image' => $this->transaction_image,
             'transaction_no' => $this->transaction_no,
-            'is_paid' => $this->is_paid,
+            'is_paid' => $this->is_paid == 0 ? '-' : 'Paid',
             'user_id' => $this->user_id,
             'status_id' => $this->status_id,
             'paymentype_id' => $this->paymentype_id,
             'user' => new UserResource($this->whenLoaded('user')),
-            'status' => $this->whenLoaded('status'),
+            'status' => $this->status ? $this->status->name : null,
             'payment' => $this->whenLoaded('payment'),
             'appointment_packages' => AppointmentPackageResource::collection($this->whenLoaded('appointment_packages')),
+            'packageNames' => $this->getPackageNames(),
             'date' => $this->created_at->format('d M, Y H:i A')
         ];
     }

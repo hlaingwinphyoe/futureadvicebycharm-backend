@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\AppointmentResource;
 use App\Models\Appointment;
 use App\Models\Status;
+use App\Models\User;
 use App\Services\AppointmentService;
 use App\Services\MediaService;
 use Illuminate\Http\Request;
@@ -21,6 +22,22 @@ class AppointmentController extends Controller
         $this->appointmentSvc = $appointmentSvc;
         $this->mediaSvc = $mediaSvc;
     }
+
+    public function getBookings($id)
+    {
+        $appointments = Appointment::query()
+            ->with(['appointment_packages'])
+            ->where('user_id', $id)
+            ->filterOn()
+            ->latest()
+            ->paginate(10)
+            ->withQueryString();
+
+        $appointments = AppointmentResource::collection($appointments);
+
+        return $this->sendResponse($appointments, 200);
+    }
+
     public function makeAppointment(Request $request)
     {
         $request->validate([
