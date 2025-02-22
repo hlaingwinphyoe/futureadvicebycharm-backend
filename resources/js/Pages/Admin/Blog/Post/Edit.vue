@@ -111,6 +111,10 @@
                                     :value="item.slug"
                                 />
                             </el-select>
+                            <InputError
+                                class="mt-2"
+                                :message="$page.props.errors.tags"
+                            />
                         </el-form-item>
                     </div>
                     <div class="mb-5">
@@ -165,9 +169,7 @@ export default {
                 title: props.post.title ?? "",
                 category: props.post.category_id ?? "",
                 desc: props.post.desc ?? "",
-                tags: props.post
-                    ? props.post.tags.map((a) => a.slug)
-                    : [],
+                tags: props.post ? props.post.tags.map((a) => a.slug) : [],
             },
             backurl: usePage().props.previous,
         });

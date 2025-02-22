@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+use Illuminate\Support\Str;
 
 class Post extends Model
 {
@@ -38,6 +40,16 @@ class Post extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'post_tags');
+    }
+
+    public function votes(): HasMany
+    {
+        return $this->hasMany(UpvoteDownVote::class);
+    }
+
+    public function post_views(): HasMany
+    {
+        return $this->hasMany(PostView::class);
     }
 
     // scope function
@@ -114,5 +126,28 @@ class Post extends Model
         }
 
         return $name;
+    }
+
+    public function formatNumber($number)
+    {
+        if ($number >= 1000000) {
+            return round($number / 1000000, 1) . 'M';
+        }
+        if ($number >= 1000) {
+            return round($number / 1000, 1) . 'K';
+        }
+        return $number;
+    }
+
+    public function humanReadTime(): Attribute
+    {
+        return new Attribute(
+            get: function ($value, $attribute) {
+                $words = Str::wordCount(strip_tags($attribute['desc']));
+                $m = ceil($words / 200);
+                return $m . ' ' . str('min')->plural($m) . ' read';
+                // $words . " " . str('words')->plural($words);
+            }
+        );
     }
 }
