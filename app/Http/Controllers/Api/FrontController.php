@@ -4,9 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BankResource;
+use App\Http\Resources\CategoryResource;
 use App\Http\Resources\PackageResource;
 use App\Http\Resources\ZodiacResource;
 use App\Models\Bank;
+use App\Models\Category;
 use App\Models\Package;
 use App\Models\Status;
 use App\Models\Zodiac;
@@ -91,5 +93,14 @@ class FrontController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 500);
         }
+    }
+
+    public function getCategories()
+    {
+        $categories = Category::orderBy('name', 'asc')->get();
+
+        $categories = CategoryResource::collection($categories);
+
+        return $this->sendResponse($categories, 'Success!');
     }
 }

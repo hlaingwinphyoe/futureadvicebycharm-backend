@@ -104,16 +104,27 @@ class PostController extends Controller
     {
         try {
             $latestPostId = Post::orderBy('id', 'desc')->first()->id;
+
             $posts = Post::query()
                 ->with('user', 'category', 'tags')
                 ->leftJoin('upvote_down_votes', 'posts.id', '=', 'upvote_down_votes.post_id')
-                ->select('posts.*', DB::raw('count(upvote_down_votes.id) as upvote_count'))
+                ->select(
+                    'posts.id',
+                    'posts.title',
+                    'posts.slug',
+                    'posts.user_id',
+                    'posts.category_id',
+                    DB::raw('ANY_VALUE(`posts`.`desc`) as `desc`'), // Escape `desc`
+                    DB::raw('ANY_VALUE(posts.created_at) as created_at'),
+                    DB::raw('count(upvote_down_votes.id) as upvote_count')
+                )
                 ->where('posts.id', '!=', $latestPostId)
                 ->published()
                 ->orderByDesc('upvote_count')
-                ->groupBy('posts.id')
+                ->groupBy('posts.id', 'posts.title', 'posts.slug', 'posts.user_id', 'posts.category_id')
                 ->limit(2)
                 ->get();
+
 
             $popularPosts = PostResource::collection($posts);
 
@@ -150,21 +161,22 @@ class PostController extends Controller
             $posts = Post::query()
                 ->with('user', 'category', 'tags')
                 ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
-                ->select('posts.*', DB::raw('count(post_views.id) as view_count'))
+                ->select(
+                    'posts.id',
+                    'posts.title',
+                    'posts.slug',
+                    'posts.user_id',
+                    'posts.category_id',
+                    DB::raw('ANY_VALUE(`posts`.`desc`) as `desc`'), // Escape `desc`
+                    DB::raw('ANY_VALUE(posts.created_at) as created_at'),
+                    DB::raw('count(post_views.id) as view_count') // Aggregate function
+                )
                 ->published()
                 ->where('posts.id', '!=', $id)
+                ->groupBy('posts.id', 'posts.title', 'posts.slug', 'posts.user_id', 'posts.category_id')
                 ->orderByDesc('view_count')
-                ->groupBy('posts.id')
                 ->limit(5)
                 ->get();
-            // $posts = Post::query()
-            //     ->with('user', 'category', 'tags')
-            //     ->filterOn()
-            //     ->where('id', '!=', $id)
-            //     ->published()
-            //     ->orderBy('id', 'desc')
-            //     ->get()
-            //     ->take(5);
 
             $recommendedPosts = PostResource::collection($posts);
 

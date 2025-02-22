@@ -18,9 +18,9 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::controller(PostController::class)->group(function () {
     Route::get('/posts-list', 'getPosts');
     Route::get('/posts-list/{slug}', 'getPost');
-    Route::get('/posts-list/special/today', 'getTodaySpecial');
+    Route::get('/today-special-post', 'getTodaySpecial');
     Route::get('/posts-list/{id}/recommended', 'getRecommendedPosts');
-    Route::get('/posts-list/popular/posts', 'getPopularPosts');
+    Route::get('/popular-posts', 'getPopularPosts');
 
     Route::get('/posts/{id}/votes', 'upVoteDownVote');
     Route::post('/posts/{id}/votes/store', 'upVoteDownVoteStore')->middleware('auth:sanctum');
@@ -35,6 +35,8 @@ Route::controller(FrontController::class)->group(function () {
     Route::get('/packages-list', 'getPackages');
     Route::get('/packages-list/{id}', 'getPackage');
     Route::get('/packages-all', 'getPackagesAll');
+
+    Route::get('/categories-list', 'getCategories');
 });
 
 Route::middleware('auth:sanctum')->prefix('auth')->group(function () {

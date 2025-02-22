@@ -67,9 +67,11 @@ class Post extends Model
         }
 
         if (request('category')) {
-            $query->whereHas('category', function ($q) {
-                $q->where('slug', request('category'));
-            });
+            if (request('category') !== 'all') {
+                $query->whereHas('category', function ($q) {
+                    $q->where('slug', request('category'));
+                });
+            }
         }
 
         if (request('sort')) {
