@@ -19,7 +19,11 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/posts-list', 'getPosts');
     Route::get('/posts-list/{slug}', 'getPost');
     Route::get('/posts-list/special/today', 'getTodaySpecial');
-    Route::get('/posts-list/{id}/recent', 'getRecentPost');
+    Route::get('/posts-list/{id}/recommended', 'getRecommendedPosts');
+    Route::get('/posts-list/popular/posts', 'getPopularPosts');
+
+    Route::get('/posts/{id}/votes', 'upVoteDownVote');
+    Route::post('/posts/{id}/votes/store', 'upVoteDownVoteStore')->middleware('auth:sanctum');
 });
 
 Route::controller(FrontController::class)->group(function () {

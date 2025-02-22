@@ -26,7 +26,9 @@ class PostResource extends JsonResource
             'author' => $this->owner,
             'published_at' => $this->created_at->diffForHumans(),
             'priority' => $this->priority,
-            'read_time' => $this->read_time,
+            'read_time' => $this->read_time ? $this->read_time : $this->human_read_time,
+            'votes' => $this->votes,
+            'views' => $this->formatNumber($this->post_views()->count()),
             'poster_url' =>  $this->poster ? asset('storage/' . $this->poster) : null,
         ];
     }

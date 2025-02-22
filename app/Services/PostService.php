@@ -19,6 +19,10 @@ class PostService
             'user_id' => Auth::id(),
         ]);
 
+        $readTime = $post->human_read_time;
+
+        $post->update(['read_time' => $readTime]);
+
         $tagsArr = explode(',', $paramData['tags']);
         $tagIds = [];
 
@@ -41,6 +45,10 @@ class PostService
             'excerpt' => Str::words($paramData['desc'], 50),
             'user_id' => Auth::id(),
         ]);
+
+        $readTime = $post->human_read_time;
+
+        $post->update(['read_time' => $readTime]);
 
         $tagsArr = explode(',', $paramData['tags']);
         $tagIds = [];
