@@ -49,6 +49,7 @@ class AppointmentController extends Controller
             'social_link' => 'required|string',
             'packages' => 'required',
             'packages.*' => 'numeric|exists:packages,id',
+            'appointment_date' => 'required|date|date_format:Y-m-d|after:today'
         ]);
 
         try {
@@ -128,5 +129,19 @@ class AppointmentController extends Controller
             DB::rollBack();
             return $this->sendError($e->getMessage(), 422);
         }
+    }
+
+    public function getBookingsDays()
+    {
+        $fullyBookedDays = DB::table('appointments')
+            ->select(DB::raw('DATE(appointment_date) as date'), DB::raw('COUNT(*) as count'))
+            ->where('appointment_date', '>=', now()->startOfDay())
+            ->groupBy(DB::raw('DATE(appointment_date)'))
+            ->having('count', '>=', 10)
+            ->get()
+            ->pluck('date')
+            ->toArray();
+
+        return $this->sendResponse($fullyBookedDays, 'Success!');
     }
 }

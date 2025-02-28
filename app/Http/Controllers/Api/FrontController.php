@@ -9,10 +9,12 @@ use App\Http\Resources\PackageResource;
 use App\Http\Resources\ZodiacResource;
 use App\Models\Bank;
 use App\Models\Category;
+use App\Models\ContactMessage;
 use App\Models\Package;
 use App\Models\Status;
 use App\Models\Zodiac;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FrontController extends Controller
 {
@@ -102,5 +104,24 @@ class FrontController extends Controller
         $categories = CategoryResource::collection($categories);
 
         return $this->sendResponse($categories, 'Success!');
+    }
+
+    public function sendMessage(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => "required|email|max:255",
+            'message' => 'required|string',
+        ]);
+
+        $contact = DB::transaction(function () use ($request) {
+            ContactMessage::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'message' => $request->message,
+            ]);
+        });
+
+        return $this->sendResponse($contact, 'Success!');
     }
 }

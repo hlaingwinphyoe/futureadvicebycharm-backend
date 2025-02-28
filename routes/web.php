@@ -23,6 +23,8 @@ Route::get('/', function () {
 Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::controller(DashboardController::class)->group(function () {
         Route::get('/dashboard', 'index')->name('dashboard');
+        Route::get('/feedback', 'feedback')->name('feedback');
+        Route::delete('/feedback/{id}/delete', 'feedbackDestroy')->name('feedback.destroy');
     });
 
     // Appointment

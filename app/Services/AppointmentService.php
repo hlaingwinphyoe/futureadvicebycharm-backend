@@ -37,6 +37,7 @@ class AppointmentService
             'desc' => $formData['desc'],
             'user_id' => $user->id,
             'status_id' => $pendingStatus->id,
+            'appointment_date' => $formData['appointment_date'],
         ]);
 
         foreach ($formData['packages'] as $packageId) {
