@@ -37,6 +37,8 @@ Route::controller(FrontController::class)->group(function () {
     Route::get('/packages-all', 'getPackagesAll');
 
     Route::get('/categories-list', 'getCategories');
+    Route::post('/send-message', 'sendMessage');
+    Route::get('/get-info', 'getInfo');
 });
 
 Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
@@ -51,6 +53,7 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
         Route::get('/{appointment_no}', 'getAppointment');
         Route::post('/{appointment_no}/payment/store', 'paymentStore');
         Route::get('/users/{id}/bookings', 'getBookings');
+        Route::get('/bookings/full-days', 'getBookingsDays');
     });
 
     // account user

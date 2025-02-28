@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('appointment_month');
             $table->double('total_price', 20, 2)->default(0.0);
             $table->double('th_total_price', 20, 2)->default(0.0);
+            $table->date('appointment_date');
             $table->longText('desc')->nullable();
             $table->foreignId('refer_id')->nullable();
             $table->double('balance')->default(0.0);

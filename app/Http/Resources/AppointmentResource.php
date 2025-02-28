@@ -35,7 +35,8 @@ class AppointmentResource extends JsonResource
             'payment' => $this->whenLoaded('payment'),
             'appointment_packages' => AppointmentPackageResource::collection($this->whenLoaded('appointment_packages')),
             'packageNames' => $this->getPackageNames(),
-            'date' => $this->created_at->format('d M, Y H:i A')
+            'date' => $this->created_at->format('d M, Y H:i A'),
+            'appointment_date' => $this->appointment_date
         ];
     }
 }
