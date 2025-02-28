@@ -38,6 +38,7 @@ Route::controller(FrontController::class)->group(function () {
 
     Route::get('/categories-list', 'getCategories');
     Route::post('/send-message', 'sendMessage');
+    Route::get('/get-info', 'getInfo');
 });
 
 Route::middleware('auth:sanctum')->prefix('auth')->group(function () {

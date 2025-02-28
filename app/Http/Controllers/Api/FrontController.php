@@ -12,6 +12,7 @@ use App\Models\Category;
 use App\Models\ContactMessage;
 use App\Models\Package;
 use App\Models\Status;
+use App\Models\SystemInfo;
 use App\Models\Zodiac;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,5 +124,12 @@ class FrontController extends Controller
         });
 
         return $this->sendResponse($contact, 'Success!');
+    }
+
+    public function getInfo()
+    {
+        $system_info = SystemInfo::with('phones')->first();
+
+        return $this->sendResponse($system_info, 'Success!');
     }
 }
