@@ -65,11 +65,10 @@ class UserController extends Controller
                 } else {
                     $currentUser->password = Hash::make($request->newPassword);
                     $currentUser->update();
-
-                    $currentUser = new UserResource($currentUser);
-                    return $this->sendResponse($currentUser, 'Success');
+                    $currentUpdateUser = new UserResource($currentUser);
                 }
                 DB::commit();
+                return $this->sendResponse($currentUpdateUser, 'Success');
             } catch (\Exception $e) {
                 DB::rollBack();
                 return $this->sendError($e->getMessage(), 422);

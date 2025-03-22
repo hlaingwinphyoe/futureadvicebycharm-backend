@@ -50,7 +50,7 @@
                         </el-table-column>
                         <el-table-column label="Title" sortable>
                             <template #default="scope">
-                                <h5 class="font-semibold">
+                                <h5 class="font-semibold line-clamp-2">
                                     {{ scope.row.title }}
                                 </h5>
                             </template>
@@ -65,7 +65,7 @@
                         <el-table-column label="Tags">
                             <template #default="scope">
                                 <h5
-                                    class="font-semibold"
+                                    class="font-semibold line-clamp-2"
                                     v-html="scope.row.tags"
                                 ></h5>
                             </template>
@@ -87,7 +87,7 @@
                                 />
                             </template>
                         </el-table-column>
-                        <el-table-column label="Actions">
+                        <el-table-column label="Actions" width="100">
                             <template #default="scope">
                                 <el-tooltip
                                     class="box-item"

@@ -100,7 +100,7 @@
                                 allow-create
                                 collapse-tags
                                 collapse-tags-tooltip
-                                :max-collapse-tags="5"
+                                :max-collapse-tags="3"
                                 default-first-option
                                 placeholder="Select or create tags"
                             >
@@ -163,7 +163,7 @@ export default {
         const formRef = ref();
         const state = reactive({
             isLoading: false,
-            imgSrc: props.post ? props.post.poster : "",
+            imgSrc: props.post ? "/storage/" + props.post.poster : "",
             virtualForm: new FormData(),
             form: {
                 title: props.post.title ?? "",

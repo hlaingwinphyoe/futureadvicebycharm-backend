@@ -20,6 +20,7 @@ class PostSeeder extends Seeder
             ['Business'],
             ['Work'],
             ['Social'],
+            ['Personal'],
         ];
 
         foreach ($categories as $category) {
@@ -32,6 +33,6 @@ class PostSeeder extends Seeder
             }
         }
 
-        Post::factory()->count(20)->create();
+        // Post::factory()->count(20)->create();
     }
 }

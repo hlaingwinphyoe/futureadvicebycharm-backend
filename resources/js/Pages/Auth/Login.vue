@@ -3,7 +3,7 @@
     <div
         class="container mx-auto flex items-center h-screen shadow-sm overflow-y-hidden relative"
     >
-        <div class="absolute right-8 top-16">
+        <div class="absolute right-8 top-24">
             <el-button
                 v-if="theme == 'light'"
                 circle
@@ -136,11 +136,11 @@
 
                         <div class="my-4 flex items-center gap-4">
                             <hr class="w-full border-gray-300" />
-                            <p class="text-sm text-black text-center">or</p>
-                            <hr class="w-full border-gray-300" />
+                            <!-- <p class="text-sm text-black text-center">or</p>
+                            <hr class="w-full border-gray-300" /> -->
                         </div>
 
-                        <el-button round plain class="w-full btn-large group">
+                        <!-- <el-button round plain class="w-full btn-large group">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="20px"
@@ -182,7 +182,7 @@
                                 class="text-black group-hover:text-primary-500"
                                 >Continue with google</span
                             >
-                        </el-button>
+                        </el-button> -->
                     </el-form>
                 </div>
             </div>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PostResource;
+use App\Http\Resources\UserResource;
 use App\Models\Post;
 use App\Models\PostView;
 use App\Models\UpvoteDownVote;
@@ -231,5 +232,44 @@ class PostController extends Controller
 
             return $this->sendResponse($modal, "Success!");
         });
+    }
+
+    public function savedPost(Post $post)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user = User::find(Auth::id());
+
+            $added_post = $user->user_posts()->where('post_id', $post->id)->first();
+            if ($added_post) {
+                return $this->sendError('Already Saved', 422);
+            } else {
+                $user->user_posts()->attach($post->id);
+            }
+
+            DB::commit();
+            return $this->sendResponse(new UserResource($user), 'Success!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->sendError($e->getMessage(), 500);
+        }
+    }
+
+    public function unSavedPost(Post $post)
+    {
+        try {
+            DB::beginTransaction();
+
+            $user = User::find(Auth::id());
+
+            $user->user_posts()->detach($post->id);
+
+            DB::commit();
+            return $this->sendResponse(new UserResource($user), 'Success!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return $this->sendError($e->getMessage(), 500);
+        }
     }
 }

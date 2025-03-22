@@ -31,6 +31,7 @@ class UserResource extends JsonResource
             'role_id' => $this->role_id,
             'role' => $this->role->name,
             'created_at' => $this->created_at->format('d M, Y'),
+            'saved_posts' => PostResource::collection($this->user_posts),
         ];
     }
 }
