@@ -52,6 +52,11 @@ class Post extends Model
         return $this->hasMany(PostView::class);
     }
 
+    public function user_posts(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'user_posts', 'post_id', 'user_id');
+    }
+
     // scope function
 
     public function scopePublished($query)

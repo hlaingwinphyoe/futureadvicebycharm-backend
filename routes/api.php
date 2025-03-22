@@ -24,6 +24,9 @@ Route::controller(PostController::class)->group(function () {
 
     Route::get('/posts/{id}/votes', 'upVoteDownVote');
     Route::post('/posts/{id}/votes/store', 'upVoteDownVoteStore')->middleware('auth:sanctum');
+
+    Route::post('/posts/{post}/saved', 'savedPost')->middleware('auth:sanctum');
+    Route::delete('/posts/{post}/unsaved', 'unSavedPost')->middleware('auth:sanctum');
 });
 
 Route::controller(FrontController::class)->group(function () {

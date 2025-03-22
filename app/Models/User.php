@@ -83,6 +83,11 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class);
     }
 
+    public function user_posts()
+    {
+        return $this->belongsToMany(Post::class, 'user_posts', 'user_id', 'post_id');
+    }
+
     protected function profile(): Attribute
     {
         return Attribute::make(

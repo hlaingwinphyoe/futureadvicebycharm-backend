@@ -100,7 +100,7 @@
                                 allow-create
                                 collapse-tags
                                 collapse-tags-tooltip
-                                :max-collapse-tags="5"
+                                :max-collapse-tags="3"
                                 default-first-option
                                 placeholder="Select or create tags"
                             >
