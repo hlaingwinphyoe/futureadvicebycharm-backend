@@ -97,6 +97,7 @@ class ZodiacSeeder extends Seeder
                 'slug' => Str::slug($zodiac['name']),
                 'name' => $zodiac['name'],
                 'period' => $zodiac['period'],
+                'desc' => $zodiac['desc'],
             ]);
         }
     }
