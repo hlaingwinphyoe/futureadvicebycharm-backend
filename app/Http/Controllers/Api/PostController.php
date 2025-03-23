@@ -168,8 +168,10 @@ class PostController extends Controller
                     'posts.slug',
                     'posts.user_id',
                     'posts.category_id',
-                    DB::raw('ANY_VALUE(`posts`.`desc`) as `desc`'), // Escape `desc`
-                    DB::raw('ANY_VALUE(posts.created_at) as created_at'),
+                    'posts.desc',
+                    'posts.created_at',
+                    // DB::raw('ANY_VALUE(`posts`.`desc`) as `desc`'), // Escape `desc`
+                    // DB::raw('ANY_VALUE(posts.created_at) as created_at'),
                     DB::raw('count(post_views.id) as view_count') // Aggregate function
                 )
                 ->published()
