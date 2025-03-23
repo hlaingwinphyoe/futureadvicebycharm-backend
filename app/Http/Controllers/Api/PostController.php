@@ -176,7 +176,15 @@ class PostController extends Controller
                 )
                 ->published()
                 ->where('posts.id', '!=', $id)
-                ->groupBy('posts.id', 'posts.title', 'posts.slug', 'posts.user_id', 'posts.category_id')
+                ->groupBy(
+                    'posts.id',
+                    'posts.title',
+                    'posts.slug',
+                    'posts.user_id',
+                    'posts.category_id',
+                    'posts.desc',
+                    'posts.created_at',
+                )
                 ->orderByDesc('view_count')
                 ->limit(5)
                 ->get();
