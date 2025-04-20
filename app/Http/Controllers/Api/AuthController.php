@@ -33,31 +33,31 @@ class AuthController extends Controller
                 'role_id' => $userRole->id
             ]);
 
-            $userAgent = $request->server('HTTP_USER_AGENT');
-            $ipAddress = $_SERVER['REMOTE_ADDR'];
+            // $userAgent = $request->server('HTTP_USER_AGENT');
+            // $ipAddress = $_SERVER['REMOTE_ADDR'];
 
-            $agent = new \Jenssegers\Agent\Agent;
-            $device = "";
-            if ($agent->isDesktop()) {
-                $device = "Desktop";
-            } else if ($agent->isMobile()) {
-                $device = "Mobile";
-            } else if ($agent->isTablet()) {
-                $device = "Tablet";
-            }
-            $browser = $agent->browser();
-            $platform = $agent->platform();
-            LoginLog::create([
-                'agent' => $userAgent,
-                'device' => $device ? $device : null,
-                'browser' => $browser ? $browser : null,
-                'platform' => $platform ? $platform : null,
-                'ip_address' => $ipAddress,
-                'user_id' => $user->id
-            ]);
+            // $agent = new \Jenssegers\Agent\Agent;
+            // $device = "";
+            // if ($agent->isDesktop()) {
+            //     $device = "Desktop";
+            // } else if ($agent->isMobile()) {
+            //     $device = "Mobile";
+            // } else if ($agent->isTablet()) {
+            //     $device = "Tablet";
+            // }
+            // $browser = $agent->browser();
+            // $platform = $agent->platform();
+            // LoginLog::create([
+            //     'agent' => $userAgent,
+            //     'device' => $device ? $device : null,
+            //     'browser' => $browser ? $browser : null,
+            //     'platform' => $platform ? $platform : null,
+            //     'ip_address' => $ipAddress,
+            //     'user_id' => $user->id
+            // ]);
 
-            $accessToken = $user->createToken($device, ['*'], now()->addHours(1))->plainTextToken;
-            $refreshToken = $user->createToken($device . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
+            $accessToken = $user->createToken('token_', ['*'], now()->addHours(1))->plainTextToken;
+            $refreshToken = $user->createToken('token_' . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
 
             return response()->json([
                 'access_token' => $accessToken,
@@ -95,33 +95,33 @@ class AuthController extends Controller
                 ], 422);
             }
 
-            $userAgent = $request->server('HTTP_USER_AGENT');
-            $ipAddress = $_SERVER['REMOTE_ADDR'];
+            // $userAgent = $request->server('HTTP_USER_AGENT');
+            // $ipAddress = $_SERVER['REMOTE_ADDR'];
 
-            $agent = new \Jenssegers\Agent\Agent;
-            $device = "";
-            if ($agent->isDesktop()) {
-                $device = "Desktop";
-            } else if ($agent->isMobile()) {
-                $device = "Mobile";
-            } else if ($agent->isTablet()) {
-                $device = "Tablet";
-            }
-            $browser = $agent->browser();
-            $platform = $agent->platform();
-            LoginLog::create([
-                'agent' => $userAgent,
-                'device' => $device ? $device : null,
-                'browser' => $browser ? $browser : null,
-                'platform' => $platform ? $platform : null,
-                'ip_address' => $ipAddress,
-                'user_id' => $user->id
-            ]);
+            // $agent = new \Jenssegers\Agent\Agent;
+            // $device = "";
+            // if ($agent->isDesktop()) {
+            //     $device = "Desktop";
+            // } else if ($agent->isMobile()) {
+            //     $device = "Mobile";
+            // } else if ($agent->isTablet()) {
+            //     $device = "Tablet";
+            // }
+            // $browser = $agent->browser();
+            // $platform = $agent->platform();
+            // LoginLog::create([
+            //     'agent' => $userAgent,
+            //     'device' => $device ? $device : null,
+            //     'browser' => $browser ? $browser : null,
+            //     'platform' => $platform ? $platform : null,
+            //     'ip_address' => $ipAddress,
+            //     'user_id' => $user->id
+            // ]);
 
-            $user->tokens()->where('name', $device)->delete();
+            $user->tokens()->delete();
 
-            $accessToken = $user->createToken($device, ['*'], now()->addHours(1))->plainTextToken;
-            $refreshToken = $user->createToken($device . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
+            $accessToken = $user->createToken('token_', ['*'], now()->addHours(1))->plainTextToken;
+            $refreshToken = $user->createToken('token_' . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
 
             return response()->json([
                 'access_token' => $accessToken,
@@ -146,19 +146,19 @@ class AuthController extends Controller
             $token->delete();
         }
 
-        $agent = new \Jenssegers\Agent\Agent;
-        $device = "";
-        if ($agent->isDesktop()) {
-            $device = "Desktop";
-        } else if ($agent->isMobile()) {
-            $device = "Mobile";
-        } else if ($agent->isTablet()) {
-            $device = "Tablet";
-        }
+        // $agent = new \Jenssegers\Agent\Agent;
+        // $device = "";
+        // if ($agent->isDesktop()) {
+        //     $device = "Desktop";
+        // } else if ($agent->isMobile()) {
+        //     $device = "Mobile";
+        // } else if ($agent->isTablet()) {
+        //     $device = "Tablet";
+        // }
 
         // Generate a new token
         $newAccessToken = $user->createToken(
-            $device,
+            'token_',
             ['*'],
             now()->addHours(1)
         );
