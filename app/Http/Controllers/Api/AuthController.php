@@ -18,7 +18,7 @@ class AuthController extends Controller
     {
         $request->validate([
             // 'phone' => 'required|numeric|unique:users,phone|digits_between:5,11',
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users,name'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
@@ -56,8 +56,8 @@ class AuthController extends Controller
             //     'user_id' => $user->id
             // ]);
 
-            $accessToken = $user->createToken('token_', ['*'], now()->addHours(1))->plainTextToken;
-            $refreshToken = $user->createToken('token_' . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
+            $accessToken = $user->createToken('tarotbycharm')->plainTextToken;
+            $refreshToken = $user->createToken('tarotbycharm')->plainTextToken;
 
             return response()->json([
                 'access_token' => $accessToken,
@@ -120,8 +120,8 @@ class AuthController extends Controller
 
             $user->tokens()->delete();
 
-            $accessToken = $user->createToken('token_', ['*'], now()->addHours(1))->plainTextToken;
-            $refreshToken = $user->createToken('token_' . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
+            $accessToken = $user->createToken('tarotbycharm', ['*'], now()->addHours(1))->plainTextToken;
+            $refreshToken = $user->createToken('tarotbycharm' . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
 
             return response()->json([
                 'access_token' => $accessToken,
@@ -157,11 +157,7 @@ class AuthController extends Controller
         // }
 
         // Generate a new token
-        $newAccessToken = $user->createToken(
-            'token_',
-            ['*'],
-            now()->addHours(1)
-        );
+        $newAccessToken = $user->createToken('tarotbycharm')->plainTextToken;
 
         return response()->json([
             'access_token' => $newAccessToken,
