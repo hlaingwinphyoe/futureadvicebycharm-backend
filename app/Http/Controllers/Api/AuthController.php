@@ -11,6 +11,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\Validation\ValidationException;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
@@ -27,11 +29,18 @@ class AuthController extends Controller
 
             $user = User::create([
                 'name' => $request->username,
-                // 'phone' => $request->phone,
                 'email' => $request->email,
-                "password" => Hash::make($request->password),
+                'password' => Hash::make($request->password),
                 'role_id' => $userRole->id
             ]);
+
+            $deviceName = $request->device_name ?? 'Default Device';
+
+            // Create main access token with short expiry time
+            $accessToken = $user->createToken($deviceName, ['*'], now()->addHour());
+
+            // Create refresh token with longer expiry time
+            $refreshToken = $user->createToken($deviceName . '_refresh', ['*'], now()->addDays(7));
 
             // $userAgent = $request->server('HTTP_USER_AGENT');
             // $ipAddress = $_SERVER['REMOTE_ADDR'];
@@ -56,12 +65,9 @@ class AuthController extends Controller
             //     'user_id' => $user->id
             // ]);
 
-            $accessToken = $user->createToken('tarotbycharm')->plainTextToken;
-            $refreshToken = $user->createToken('tarotbycharm')->plainTextToken;
-
             return response()->json([
-                'access_token' => $accessToken,
-                'refresh_token' => $refreshToken,
+                'access_token' => $accessToken->plainTextToken,
+                'refresh_token' => $refreshToken->plainTextToken,
                 'user' =>  new UserResource($user)
             ], 200);
         } catch (\Exception $e) {
@@ -77,10 +83,18 @@ class AuthController extends Controller
         ]);
 
         try {
-            $user = User::where('name', $request->credentials)
-                ->orWhere('phone', $request->credentials)
-                ->orWhere('email', $request->credentials)
-                ->first();
+            $user = User::whereAny(
+                [
+                    'name',
+                    'email',
+                    'phone'
+                ],
+                $request->credentials
+            )->first();
+            // $user = User::where('name', $request->credentials)
+            //     ->orWhere('phone', $request->credentials)
+            //     ->orWhere('email', $request->credentials)
+            //     ->first();
             if ($user == null) {
                 return [
                     'status' => false,
@@ -90,9 +104,11 @@ class AuthController extends Controller
             }
 
             if (!Hash::check($request->password, $user->password)) {
-                return response()->json([
-                    'message' => 'These Credentials do not match our records.'
-                ], 422);
+                return [
+                    'status' => false,
+                    'code' => 403,
+                    'message' => "These Credentials do not match our records."
+                ];
             }
 
             // $userAgent = $request->server('HTTP_USER_AGENT');
@@ -118,14 +134,15 @@ class AuthController extends Controller
             //     'user_id' => $user->id
             // ]);
 
-            $user->tokens()->delete();
+            $deviceName = $request->device_name ?? 'Default Device';
 
-            $accessToken = $user->createToken('tarotbycharm', ['*'], now()->addHours(1))->plainTextToken;
-            $refreshToken = $user->createToken('tarotbycharm' . '_refresh', ['refresh'], now()->addDays(7))->plainTextToken;
+            $accessToken = $user->createToken($deviceName, ['*'], now()->addHour());
+
+            $refreshToken = $user->createToken($deviceName . '_refresh', ['*'], now()->addDays(7));
 
             return response()->json([
-                'access_token' => $accessToken,
-                'refresh_token' => $refreshToken,
+                'access_token' => $accessToken->plainTextToken,
+                'refresh_token' => $refreshToken->plainTextToken,
                 'user' =>  new UserResource($user)
             ], 200);
         } catch (\Exception $e) {
@@ -136,32 +153,41 @@ class AuthController extends Controller
     public function refreshToken(Request $request)
     {
         $request->validate([
-            'refresh_token' => 'required'
+            'refresh_token' => 'required|string',
         ]);
 
-        $user = $request->user();
+        $refreshTokenParts = explode('|', $request->refresh_token, 2);
 
-        foreach ($user->tokens as $token) {
-            $token->revoke();
-            $token->delete();
+        if (count($refreshTokenParts) !== 2) {
+            return response()->json(['message' => 'Invalid token format'], 401);
         }
 
-        // $agent = new \Jenssegers\Agent\Agent;
-        // $device = "";
-        // if ($agent->isDesktop()) {
-        //     $device = "Desktop";
-        // } else if ($agent->isMobile()) {
-        //     $device = "Mobile";
-        // } else if ($agent->isTablet()) {
-        //     $device = "Tablet";
-        // }
+        $refreshToken = PersonalAccessToken::findToken($refreshTokenParts[1]);
 
-        // Generate a new token
-        $newAccessToken = $user->createToken('tarotbycharm')->plainTextToken;
+        if (!$refreshToken || $refreshToken->created_at->addDays(7)->isPast()) {
+            return response()->json(['message' => 'Invalid or expired refresh token'], 401);
+        }
+
+        $user = $refreshToken->tokenable;
+        $deviceName = explode('_refresh', $refreshToken->name)[0] ?? 'Default Device';
+
+        $newAccessToken = $user->createToken($deviceName, ['*'], now()->addHour());
+
+        // $refreshToken->delete();
+
+        // Create new refresh token if needed
+        // Uncomment the following if you want to issue a new refresh token each time
+        /*
+        $newRefreshToken = $user->createToken($deviceName . '_refresh', ['*'], now()->addDays(7));
+        return response()->json([
+            'access_token' => $newAccessToken->plainTextToken,
+            'refresh_token' => $newRefreshToken->plainTextToken,
+        ]);
+        */
 
         return response()->json([
-            'access_token' => $newAccessToken,
-        ], 200);
+            'access_token' => $newAccessToken->plainTextToken,
+        ]);
     }
 
     public function logout()

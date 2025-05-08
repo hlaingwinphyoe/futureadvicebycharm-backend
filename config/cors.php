@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['http://localhost:3000', 'https://test.tarotbycharm.com', 'https://tarotbycharm.com', 'http://172.20.10.2:3000', 'https://future.tarotbycharm.com'],
+    'allowed_origins' => ['http://localhost:3000', 'https://test.tarotbycharm.com', 'https://tarotbycharm.com', 'http://192.168.1.136:3000', 'https://future.tarotbycharm.com'],
 
     'allowed_origins_patterns' => [],
 

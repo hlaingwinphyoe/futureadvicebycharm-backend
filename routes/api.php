@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('/refresh-token', [AuthController::class, 'refreshToken']);
 
 // Route::post('/auth/{provider}/redirect', [AuthController::class, 'redirect']);
 // Route::post('/auth/google/callback', [AuthController::class, 'callback']);
@@ -47,7 +48,7 @@ Route::controller(FrontController::class)->group(function () {
 Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
     Route::controller(AuthController::class)->group(function () {
         Route::get('/user', 'getUser');
-        Route::post('/refresh-token', 'refreshToken');
+        // Route::post('/refresh-token', 'refreshToken');
         Route::post('/logout', 'logout');
     });
 
