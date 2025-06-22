@@ -195,11 +195,13 @@ import { useForm } from "@inertiajs/vue3";
 import { onMounted, ref } from "vue";
 import { Sunny, Moon } from "@element-plus/icons-vue";
 import { useDarkMode } from "@/darkmode";
+import InputError from "@/Components/InputError.vue";
 
 export default {
     components: {
         Sunny,
         Moon,
+        InputError,
     },
     setup() {
         const formRef = ref();

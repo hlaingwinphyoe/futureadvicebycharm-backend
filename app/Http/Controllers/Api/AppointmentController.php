@@ -49,7 +49,7 @@ class AppointmentController extends Controller
             'social_link' => 'required|string',
             'packages' => 'required',
             'packages.*' => 'numeric|exists:packages,id',
-            'appointment_date' => 'required|date|date_format:Y-m-d|after:today'
+            'appointment_date' => 'required|date|date_format:Y-m-d|after:yesterday'
         ]);
 
         try {
