@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\Status;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class AppointmentController extends Controller
@@ -68,5 +69,21 @@ class AppointmentController extends Controller
         }
 
         return redirect()->route('admin.appointments.index')->with('success', 'Success');
+    }
+
+    public function destroy($id)
+    {
+        try {
+            DB::beginTransaction();
+            $appointment = Appointment::findOrFail($id);
+            $appointment->appointment_packages()->delete();
+            $appointment->delete();
+
+            DB::commit();
+            return redirect()->back()->with('success', 'Successfully Deleted');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
     }
 }

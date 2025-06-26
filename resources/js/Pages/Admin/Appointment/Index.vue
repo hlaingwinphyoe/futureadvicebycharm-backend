@@ -49,9 +49,16 @@
                         </el-table-column>
                         <el-table-column label="Status">
                             <template #default="scope">
-                                <el-tag type="primary">{{
-                                    scope.row.status
-                                }}</el-tag>
+                                <el-tag
+                                    :type="
+                                        scope.row.status == 'Incomplete'
+                                            ? 'danger'
+                                            : scope.row.status == 'Approved'
+                                            ? 'success'
+                                            : 'warning'
+                                    "
+                                    >{{ scope.row.status }}</el-tag
+                                >
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -74,26 +81,34 @@
                                         <el-icon><View /></el-icon>
                                     </el-button>
                                 </el-tooltip>
-                                <!-- <el-tooltip class="box-item" content="Edit" placement="top">
-                    <el-button
-                      type="warning"
-                      circle
-                      style="margin-bottom: 5px"
-                      @click="handleEdit(scope.row)"
-                    >
-                      <el-icon><Edit /></el-icon>
-                    </el-button>
-                  </el-tooltip>
-                  <el-tooltip class="box-item" content="Delete" placement="top">
-                    <el-button
-                      type="danger"
-                      circle
-                      style="margin-bottom: 5px"
-                      @click="handleDelete(scope.row.id)"
-                    >
-                      <el-icon><Delete /></el-icon>
-                    </el-button>
-                  </el-tooltip> -->
+                                <!-- <el-tooltip
+                                    class="box-item"
+                                    content="Edit"
+                                    placement="top"
+                                >
+                                    <el-button
+                                        type="warning"
+                                        circle
+                                        style="margin-bottom: 5px"
+                                        @click="handleEdit(scope.row)"
+                                    >
+                                        <el-icon><Edit /></el-icon>
+                                    </el-button>
+                                </el-tooltip> -->
+                                <el-tooltip
+                                    class="box-item"
+                                    content="Delete"
+                                    placement="top"
+                                >
+                                    <el-button
+                                        type="danger"
+                                        circle
+                                        style="margin-bottom: 5px"
+                                        @click="handleDelete(scope.row.id)"
+                                    >
+                                        <el-icon><Delete /></el-icon>
+                                    </el-button>
+                                </el-tooltip>
                             </template>
                         </el-table-column>
                     </el-table>
@@ -128,6 +143,7 @@ import {
     Delete,
     View,
 } from "@element-plus/icons-vue";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
     props: ["appointments"],
@@ -203,6 +219,36 @@ export default {
             router.get(route("admin.appointments.index"));
         };
 
+        const handleDelete = (id) => {
+            ElMessageBox.confirm(
+                "Are you sure you want to delete?",
+                "Warning",
+                {
+                    confirmButtonText: "Confirm",
+                    cancelButtonText: "Cancel",
+                    type: "warning",
+                    draggable: true,
+                    closeOnClickModal: false,
+                }
+            )
+                .then(() => {
+                    router.delete(route("admin.appointments.destroy", id), {
+                        onSuccess: (page) => {
+                            ElMessage.success(page.props.flash.success);
+                        },
+                        onError: (page) => {
+                            ElMessage.error(page.props.flash.error);
+                        },
+                    });
+                })
+                .catch(() => {
+                    ElMessage({
+                        type: "info",
+                        message: "Cancel",
+                    });
+                });
+        };
+
         return {
             ...toRefs(state),
             addNew,
@@ -211,6 +257,7 @@ export default {
             onCurrentChange,
             closeDialog,
             reset,
+            handleDelete,
         };
     },
 };
