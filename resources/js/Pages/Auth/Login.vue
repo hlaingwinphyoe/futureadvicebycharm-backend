@@ -44,7 +44,7 @@
                 <div
                     class="flex items-center md:px-8 p-6 md:py-16 2xl:py-24 bg-[#FAF4FE] md:rounded-tl-[55px] md:rounded-bl-[55px] h-full md:rounded-br-3xl"
                     style="
-                        background-image: url(/imgs/bg.png);
+                        background-image: url(./imgs/bg.png);
                         background-repeat: no-repeat;
                         background-size: cover;
                         background-position: center;

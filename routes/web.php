@@ -32,6 +32,7 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::get('/{id}', 'show')->name('show');
         Route::patch('/{id}/{type}', 'update')->name('update');
+        Route::delete('/{id}/delete', 'destroy')->name('destroy');
     });
 
     // Reading Post
