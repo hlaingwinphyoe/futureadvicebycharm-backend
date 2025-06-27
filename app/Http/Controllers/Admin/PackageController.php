@@ -44,6 +44,9 @@ class PackageController extends Controller
                 'created_at' => $package->created_at->diffForHumans(),
                 'disabled' => $package->disabled,
                 'image' => $package->media,
+                'discount_percent' => $package->discount_percent,
+                'final_price' => $package->final_price,
+                'th_final_price' => $package->th_final_price
             ]);
 
         $astrologers = User::astrologer()->get();
@@ -56,6 +59,24 @@ class PackageController extends Controller
         ]);
     }
 
+    /**
+     * Calculate discounted prices
+     */
+    private function calculateDiscountedPrices($price, $th_price, $discount)
+    {
+        if ($discount > 0) {
+            $final_price = round($price * (1 - $discount / 100), 2);
+            $th_final_price = round($th_price * (1 - $discount / 100), 2);
+        } else {
+            $final_price = $price;
+            $th_final_price = $th_price;
+        }
+        return [
+            'final_price' => $final_price,
+            'th_final_price' => $th_final_price,
+        ];
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -64,10 +85,16 @@ class PackageController extends Controller
             'th_price' => 'required|numeric|min:0',
             'currency' => 'nullable|numeric|exists:currencies,id',
             'astrologer' => 'required|numeric|exists:users,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024',
+            'discount_percent' => 'nullable|integer|min:0|max:100',
         ]);
 
-        $data = DB::transaction(function () use ($request) {
+        $discount = $request->discount_percent ?? 0;
+        $price = $request->price;
+        $th_price = $request->th_price;
+        $discounted = $this->calculateDiscountedPrices($price, $th_price, $discount);
+
+        $data = DB::transaction(function () use ($request, $discount, $discounted) {
             $th_currency = Currency::where('slug', 'thb')->first();
             $mm_currency = Currency::where('slug', 'mmk')->first();
             $package = Package::create([
@@ -77,6 +104,9 @@ class PackageController extends Controller
                 'currency_id' => $mm_currency->id,
                 'th_currency_id' => $th_currency->id,
                 'astrologer_id' => $request->astrologer,
+                'discount_percent' => $discount,
+                'final_price' => $discounted['final_price'],
+                'th_final_price' => $discounted['th_final_price'],
             ]);
 
             if ($request->hasFile('image')) {
@@ -104,19 +134,29 @@ class PackageController extends Controller
             'th_price' => 'required|numeric|min:0',
             'currency' => 'nullable|numeric|exists:currencies,id',
             'astrologer' => 'required|numeric|exists:users,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024'
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:1024',
+            'discount_percent' => 'nullable|integer|min:0|max:100',
         ]);
 
-        $data = DB::transaction(function () use ($request, $package) {
+        $discount = $request->discount_percent ?? 0;
+        $price = $request->price;
+        $th_price = $request->th_price;
+        $discounted = $this->calculateDiscountedPrices($price, $th_price, $discount);
+
+        $data = DB::transaction(function () use ($request, $package, $discount, $discounted, $price, $th_price) {
             $th_currency = Currency::where('slug', 'thb')->first();
             $mm_currency = Currency::where('slug', 'mmk')->first();
+
             $package->update([
                 'name' => $request->name,
-                'price' => $request->price,
-                'th_price' => $request->th_price,
+                'price' => $price,
+                'th_price' => $th_price,
                 'currency_id' => $mm_currency->id,
                 'th_currency_id' => $th_currency->id,
                 'astrologer_id' => $request->astrologer,
+                'discount_percent' => $discount,
+                'final_price' => $discounted['final_price'],
+                'th_final_price' => $discounted['th_final_price'],
             ]);
 
             if ($request->hasFile('image')) {
@@ -190,10 +230,47 @@ class PackageController extends Controller
 
     public function destroy(Package $package)
     {
+        if ($package->appointment_packages()->count() > 0) {
+            return redirect()->back()->withErrors(['error' => 'This package have appointment']);
+        }
         $data = DB::transaction(function () use ($package) {
             $package->delete();
         });
 
+        return redirect()->back()->with('success', 'Successfully Deleted.');
+    }
+
+    public function bulkDiscount(Request $request)
+    {
+        $request->validate([
+            'discount_percent' => 'required|integer|min:0|max:100',
+        ]);
+        try {
+            DB::beginTransaction();
+            $discount = $request->discount_percent;
+            $packages = Package::all();
+            foreach ($packages as $package) {
+                $discounted = $this->calculateDiscountedPrices($package->price, $package->th_price, $discount);
+                $package->update([
+                    'discount_percent' => $discount,
+                    'final_price' => $discounted['final_price'],
+                    'th_final_price' => $discounted['th_final_price'],
+                ]);
+            }
+            DB::commit();
+            return redirect()->back()->with('success', 'All packages updated with discount.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteRemark(Package $package, Remark $remark)
+    {
+        DB::transaction(function () use ($package, $remark) {
+            $package->remarks()->detach($remark->id);
+            $remark->delete();
+        });
         return redirect()->back()->with('success', 'Successfully Deleted.');
     }
 }

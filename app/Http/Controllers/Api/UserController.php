@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use App\Services\MediaService;
@@ -110,5 +111,32 @@ class UserController extends Controller
             DB::rollBack();
             return $this->sendError($e->getMessage(), 422);
         }
+    }
+
+    /**
+     * Save a post for the authenticated user
+     * Route: POST api/user/save-post
+     */
+    public function savePosts(Request $request)
+    {
+        $request->validate([
+            'post_id' => 'required|exists:posts,id',
+        ]);
+        $user = User::findOrFail(Auth::id());
+        $postId = $request->post_id;
+        if ($user->user_posts()->where('post_id', $postId)->exists()) {
+            return response()->json(['message' => 'Already saved'], 422);
+        }
+        $user->user_posts()->attach($postId);
+        return response()->json(['message' => 'Post saved successfully']);
+    }
+
+    public function getSavedPosts($id)
+    {
+        $user = User::findOrFail($id);
+        $posts = $user->user_posts()->with('user', 'category', 'tags')->latest()->get();
+        $collectPosts = PostResource::collection($posts);
+
+        return $this->sendResponse($collectPosts, 'Success');
     }
 }

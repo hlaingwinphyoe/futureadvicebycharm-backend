@@ -13,8 +13,19 @@
             :class="remarks.length > 0 ? 'mb-7' : 'mb-2'"
             class="ml-5 list-disc space-y-2"
         >
-            <li v-for="remark in remarks" :key="remark.id">
+            <li
+                v-for="remark in remarks"
+                :key="remark.id"
+                class="flex items-center gap-2"
+            >
                 {{ remark.name }}
+                <el-button
+                    type="danger"
+                    size="small"
+                    @click="confirmDeleteRemark(remark)"
+                >
+                    Delete
+                </el-button>
             </li>
         </ul>
         <el-form
@@ -64,11 +75,10 @@
 </template>
 
 <script>
-import { useForm } from "@inertiajs/vue3";
+import { useForm, router } from "@inertiajs/vue3";
 import { reactive, ref, toRefs } from "vue";
 import InputError from "@/Components/InputError.vue";
-import { ElMessage } from "element-plus";
-import axios from "axios";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 export default {
     props: ["show", "title", "data"],
@@ -132,6 +142,41 @@ export default {
                 });
         };
 
+        const deleteRemark = (remark) => {
+            router.delete(
+                route("admin.packages.delete-remark", {
+                    package: props.data.id,
+                    remark: remark.id,
+                }),
+                {
+                    preserveScroll: true,
+                    onSuccess: () => {
+                        ElMessage.success("Remark deleted");
+                        getRemarks();
+                    },
+                    onError: () => {
+                        ElMessage.error("Failed to delete remark");
+                    },
+                }
+            );
+        };
+
+        const confirmDeleteRemark = (remark) => {
+            ElMessageBox.confirm(
+                "Are you sure you want to delete this remark?",
+                "Warning",
+                {
+                    confirmButtonText: "Yes",
+                    cancelButtonText: "No",
+                    type: "warning",
+                }
+            )
+                .then(() => {
+                    deleteRemark(remark);
+                })
+                .catch(() => {});
+        };
+
         return {
             ...toRefs(state),
             formRef,
@@ -139,6 +184,7 @@ export default {
             closeDialog,
             openDialog,
             submitDialog,
+            confirmDeleteRemark,
         };
     },
 };

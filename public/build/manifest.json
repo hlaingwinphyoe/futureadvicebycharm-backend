@@ -1016,7 +1016,7 @@
     ]
   },
   "resources/js/Pages/Admin/Package/Dialog.vue": {
-    "file": "assets/Dialog-CXBtedGj.js",
+    "file": "assets/Dialog-braYNAGG.js",
     "name": "Dialog",
     "src": "resources/js/Pages/Admin/Package/Dialog.vue",
     "isDynamicEntry": true,
@@ -1062,7 +1062,7 @@
     ]
   },
   "resources/js/Pages/Admin/Package/Index.vue": {
-    "file": "assets/Index-BVyXfyrg.js",
+    "file": "assets/Index-tUXL7ZFB.js",
     "name": "Index",
     "src": "resources/js/Pages/Admin/Package/Index.vue",
     "isDynamicEntry": true,
@@ -1070,12 +1070,12 @@
       "_AuthenticatedLayout-BwqdLtow.js",
       "_@inertiajs-BHNbm3Fi.js",
       "_lodash.debounce-D6Lq3Ox3.js",
+      "_@vue-DjPJmJBm.js",
       "resources/js/Pages/Admin/Package/Dialog.vue",
       "resources/js/Pages/Admin/Package/RemarkDialog.vue",
       "_@element-plus-7OHurGuN.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_element-plus-LrVxQH71.js",
-      "_@vue-DjPJmJBm.js",
       "_darkmode-BEaTfPzm.js",
       "_moment-C5S46NFB.js",
       "_ApplicationLogo-D133QDgo.js",
@@ -1115,14 +1115,13 @@
     ]
   },
   "resources/js/Pages/Admin/Package/RemarkDialog.vue": {
-    "file": "assets/RemarkDialog-rtfTwpeK.js",
+    "file": "assets/RemarkDialog-DHyIe9qD.js",
     "name": "RemarkDialog",
     "src": "resources/js/Pages/Admin/Package/RemarkDialog.vue",
     "isDynamicEntry": true,
     "imports": [
       "_@inertiajs-BHNbm3Fi.js",
       "_InputError-DuIKKUKn.js",
-      "_axios-upsvKRUO.js",
       "__plugin-vue_export-helper-DlAUqK2U.js",
       "_element-plus-LrVxQH71.js",
       "_@vue-DjPJmJBm.js",
@@ -1146,6 +1145,7 @@
       "_hasown-DwiY0sux.js",
       "_call-bound-DguFMLXM.js",
       "_side-channel-weakmap-8WVUVGFG.js",
+      "_axios-upsvKRUO.js",
       "_lodash.clonedeep-jBCF3Pnn.js",
       "_lodash.isequal-v2OLR2rF.js",
       "_lodash-es-CFXHhIzv.js",
@@ -2001,7 +2001,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-C3PxLm6X.js",
+    "file": "assets/app-DbdWwtV8.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -2085,7 +2085,7 @@
       "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue"
     ],
     "css": [
-      "assets/app-BWjm97wg.css"
+      "assets/app-DOMZMV6N.css"
     ]
   }
 }

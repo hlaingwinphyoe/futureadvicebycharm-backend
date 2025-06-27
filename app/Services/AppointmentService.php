@@ -40,28 +40,42 @@ class AppointmentService
             'appointment_date' => $formData['appointment_date'],
         ]);
 
+        $total_price = 0;
+        $th_total_price = 0;
         foreach ($formData['packages'] as $packageId) {
             $package = Package::findOrFail($packageId);
 
+            $price = $package->price;
+            $th_price = $package->th_price;
+            $balance = $package->final_price;
+            $th_balance = $package->th_final_price;
+            $discount_amt = $package->discount_percent;
+
             $appointment->appointment_packages()->create([
                 'package_id' => $package->id,
-                'price' => $package->price,
-                'th_price' => $package->th_price,
-                'balance' => $package->price,
-                'th_balance' => $package->th_price,
+                'price' => $price,
+                'th_price' => $th_price,
+                'balance' => $balance,
+                'th_balance' => $th_balance,
                 'currency_id' => $package->currency_id,
                 'th_currency_id' => $package->th_currency_id,
                 'status_id' => $unPaidStatus->id,
+                'discount_amt' => $discount_amt,
             ]);
 
             $appointment->update([
                 'refer_id' => $package->astrologer_id,
-                'total_price' => $appointment->total_price + $package->price,
-                'balance' => $appointment->total_price + $package->price,
-                'th_total_price' => $appointment->th_total_price + $package->th_price,
-                'th_balance' => $appointment->th_total_price + $package->th_price,
             ]);
+
+            $total_price += $balance;
+            $th_total_price += $th_balance;
         }
+        $appointment->update([
+            'total_price' => $total_price,
+            'balance' => $total_price,
+            'th_total_price' => $th_total_price,
+            'th_balance' => $th_total_price,
+        ]);
 
         return $appointment;
     }
