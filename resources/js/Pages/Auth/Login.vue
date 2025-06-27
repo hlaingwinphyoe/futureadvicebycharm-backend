@@ -86,7 +86,7 @@
                                 class="input-round"
                                 autocomplete="name"
                             />
-                            <InputError class="mt-2" :message="form.name" />
+                            <InputError class="mt-2" :message="form.errors.name" />
                         </el-form-item>
                         <el-form-item
                             label="Password"
@@ -106,7 +106,7 @@
                                 v-model="form.password"
                                 class="input-round"
                             />
-                            <InputError class="mt-2" :message="form.password" />
+                            <InputError class="mt-2" :message="form.errors.password" />
                         </el-form-item>
 
                         <div
