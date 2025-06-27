@@ -44,6 +44,11 @@ class Package extends Model
         return $this->morphToMany(Remark::class, 'remarkable');
     }
 
+    public function appointment_packages(): HasMany
+    {
+        return $this->hasMany(AppointmentPackage::class, 'package_id', 'id');
+    }
+
     // scope function
     public function scopeFilterOn($query)
     {

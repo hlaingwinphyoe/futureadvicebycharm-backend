@@ -65,5 +65,6 @@ Route::middleware('auth:sanctum')->prefix('auth')->group(function () {
         Route::patch('/info/update', 'updateInfo');
         Route::patch('/password/update', 'updatePassword');
         Route::post('/avatar/upload', 'uploadAvatar');
+        Route::get('/{id}/saved-posts', 'getSavedPosts');
     });
 });

@@ -13,6 +13,32 @@
                             <el-icon><Plus /></el-icon>
                             <span>New</span>
                         </el-button>
+
+                        <!-- Bulk Discount Form -->
+                        <el-form
+                            :inline="true"
+                            @submit.prevent="submitBulkDiscount"
+                        >
+                            <el-form-item
+                                label="Bulk Discount (%)"
+                                class="!mb-0 !mr-3"
+                            >
+                                <el-input
+                                    v-model.number="bulkDiscount"
+                                    type="number"
+                                    min="0"
+                                    max="100"
+                                    style="width: 120px"
+                                    placeholder="0-100"
+                                />
+                            </el-form-item>
+                            <el-button
+                                type="primary"
+                                @click="submitBulkDiscount"
+                            >
+                                Apply to All
+                            </el-button>
+                        </el-form>
                     </div>
 
                     <div>
@@ -32,7 +58,7 @@
                 <div v-loading="isLoading" element-loading-text="Loading...">
                     <el-table
                         :data="packages.data"
-                        table-layout="fixed"
+                        table-layout="auto"
                         :default-sort="{ prop: 'id', order: 'descending' }"
                     >
                         <el-table-column prop="id" label="ID" sortable />
@@ -55,21 +81,53 @@
                         </el-table-column>
                         <el-table-column label="Price">
                             <template #default="scope">
-                                <el-tag type="primary" class="mr-1"
-                                    >{{ scope.row.price }}
-                                    {{ scope.row.currency }}</el-tag
-                                >
-                                <el-tag type="danger"
-                                    >{{ scope.row.th_price }}
-                                    {{ scope.row.th_currency }}</el-tag
-                                >
+                                <template v-if="scope.row.discount_percent > 0">
+                                    <el-tag type="primary" class="mr-1">
+                                        <span
+                                            style="
+                                                text-decoration: line-through;
+                                                color: #888;
+                                            "
+                                            >{{ scope.row.price }}</span
+                                        >
+                                        <span class="ml-1"
+                                            >{{ scope.row.final_price }}
+                                            {{ scope.row.currency }}</span
+                                        >
+                                    </el-tag>
+                                    <el-tag type="danger">
+                                        <span
+                                            style="
+                                                text-decoration: line-through;
+                                                color: #888;
+                                            "
+                                            >{{ scope.row.th_price }}</span
+                                        >
+                                        <span class="ml-1"
+                                            >{{ scope.row.th_final_price }}
+                                            {{ scope.row.th_currency }}</span
+                                        >
+                                    </el-tag>
+                                </template>
+                                <template v-else>
+                                    <el-tag type="primary" class="mr-1">
+                                        {{ scope.row.price }}
+                                        {{ scope.row.currency }}
+                                    </el-tag>
+                                    <el-tag type="danger">
+                                        {{ scope.row.th_price }}
+                                        {{ scope.row.th_currency }}
+                                    </el-tag>
+                                </template>
                             </template>
                         </el-table-column>
-                        <!-- <el-table-column
-                            prop="astrologer"
-                            label="Astrologer"
-                            sortable
-                        /> -->
+                        <el-table-column label="Discount (%)" align="center">
+                            <template #default="scope">
+                                <span v-if="scope.row.discount_percent > 0">
+                                    {{ scope.row.discount_percent }} %
+                                </span>
+                            </template>
+                        </el-table-column>
                         <el-table-column
                             prop="created_at"
                             label="Created At"
@@ -213,6 +271,7 @@ export default {
                 page_size: 10,
                 search: "",
             },
+            bulkDiscount: "",
         });
 
         const onSizeChange = (val) => {
@@ -265,7 +324,7 @@ export default {
                                 ElMessage.success(page.props.flash.success);
                             },
                             onError: (page) => {
-                                ElMessage.error(page.props.flash.error);
+                                ElMessage.error(page.error);
                             },
                         }
                     );
@@ -297,7 +356,7 @@ export default {
                             ElMessage.success(page.props.flash.success);
                         },
                         onError: (page) => {
-                            ElMessage.error(page.props.flash.error);
+                            ElMessage.error(page.error);
                         },
                     });
                 })
@@ -337,6 +396,30 @@ export default {
             router.get(route("admin.packages.index"));
         };
 
+        const submitBulkDiscount = () => {
+            if (state.bulkDiscount < 0 || state.bulkDiscount > 100) {
+                ElMessage.error("Discount must be between 0 and 100");
+                return;
+            }
+            state.isLoading = true;
+            router.post(
+                route("admin.packages.bulk-discount"),
+                { discount_percent: state.bulkDiscount },
+                {
+                    onSuccess: () => {
+                        ElMessage.success("Bulk discount applied!");
+                        state.isLoading = false;
+                        getData();
+                        state.bulkDiscount = "";
+                    },
+                    onError: (page) => {
+                        ElMessage.error(page.error);
+                        state.isLoading = false;
+                    },
+                }
+            );
+        };
+
         return {
             ...toRefs(state),
             addNew,
@@ -348,6 +431,7 @@ export default {
             reset,
             changeStatus,
             addRemarks,
+            submitBulkDiscount,
         };
     },
 };

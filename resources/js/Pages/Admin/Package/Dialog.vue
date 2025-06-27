@@ -121,6 +121,30 @@
                     :message="$page.props.errors.astrologer"
                 />
             </el-form-item>
+            <el-form-item
+                label="Discount (%)"
+                prop="discount_percent"
+                :rules="[
+                    {
+                        type: 'number',
+                        min: 0,
+                        max: 100,
+                        message: 'Discount must be between 0 and 100',
+                        trigger: 'blur',
+                    },
+                ]"
+            >
+                <el-input
+                    v-model.number="form.discount_percent"
+                    type="number"
+                    min="0"
+                    max="100"
+                />
+                <InputError
+                    class="mt-2"
+                    :message="$page.props.errors.discount_percent"
+                />
+            </el-form-item>
             <el-form-item label="Image">
                 <div class="relative group">
                     <img
@@ -196,6 +220,7 @@ export default {
                 price: "",
                 astrologer: "",
                 th_price: "",
+                discount_percent: 0,
             },
         });
 
@@ -209,7 +234,7 @@ export default {
 
         const loadFile = (event) => {
             var input = event.target;
-            console.log(input)
+            console.log(input);
             var file = input.files[0];
 
             state.imgSrc = URL.createObjectURL(file);
@@ -230,6 +255,10 @@ export default {
                     state.virtualForm.append("name", state.form.name);
                     state.virtualForm.append("price", state.form.price);
                     state.virtualForm.append("th_price", state.form.th_price);
+                    state.virtualForm.append(
+                        "discount_percent",
+                        state.form.discount_percent
+                    );
                     state.virtualForm.append(
                         "astrologer",
                         state.form.astrologer
@@ -278,6 +307,7 @@ export default {
             state.form.astrologer = props.data.astrologer_id
                 ? props.data.astrologer_id
                 : props.astrologers[0].id;
+            state.form.discount_percent = props.data.discount_percent ?? 0;
             state.imgSrc = props.data.image ?? "";
             // form.currency = props.data.currency_id ?? props.currencies[0].id;
         };
