@@ -8,7 +8,7 @@ export function useDarkMode() {
     function darkMode() {
         html.classList.add("dark");
         body.style.backgroundColor = "#141414";
-        body.classList.add('text-white')
+        body.classList.add("text-white");
         theme.value = "dark";
 
         // save to localstorage
@@ -19,7 +19,7 @@ export function useDarkMode() {
     function lightMode() {
         html.classList.remove("dark");
         body.style.backgroundColor = "#eeebe6";
-        body.classList.remove('text-white')
+        body.classList.remove("text-white");
         theme.value = "light";
 
         // save to localstorage

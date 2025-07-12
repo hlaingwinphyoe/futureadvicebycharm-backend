@@ -14,6 +14,13 @@
     "file": "assets/@floating-ui-DHxWKL-w.js",
     "name": "@floating-ui"
   },
+  "_@heroicons-Ymo9VSKg.js": {
+    "file": "assets/@heroicons-Ymo9VSKg.js",
+    "name": "@heroicons",
+    "imports": [
+      "_@vue-DjPJmJBm.js"
+    ]
+  },
   "_@inertiajs-BHNbm3Fi.js": {
     "file": "assets/@inertiajs-BHNbm3Fi.js",
     "name": "@inertiajs",
@@ -25,6 +32,10 @@
       "_lodash.clonedeep-jBCF3Pnn.js",
       "_lodash.isequal-v2OLR2rF.js"
     ]
+  },
+  "_@kurkle-D8fDXNIl.js": {
+    "file": "assets/@kurkle-D8fDXNIl.js",
+    "name": "@kurkle"
   },
   "_@popperjs-C8Ek51sF.js": {
     "file": "assets/@popperjs-C8Ek51sF.js",
@@ -126,6 +137,13 @@
     "imports": [
       "_get-intrinsic-Bxi7wI-n.js",
       "_call-bind-apply-helpers-D2lLUVvI.js"
+    ]
+  },
+  "_chart.js-Dw6F-SA0.js": {
+    "file": "assets/chart.js-Dw6F-SA0.js",
+    "name": "chart.js",
+    "imports": [
+      "_@kurkle-D8fDXNIl.js"
     ]
   },
   "_darkmode-BEaTfPzm.js": {
@@ -1797,16 +1815,22 @@
     ]
   },
   "resources/js/Pages/Dashboard.vue": {
-    "file": "assets/Dashboard-DgPOvdX6.js",
+    "file": "assets/Dashboard-BDfya2Fb.js",
     "name": "Dashboard",
     "src": "resources/js/Pages/Dashboard.vue",
     "isDynamicEntry": true,
     "imports": [
       "_AuthenticatedLayout-BwqdLtow.js",
+      "_@heroicons-Ymo9VSKg.js",
       "_@vue-DjPJmJBm.js",
+      "_chart.js-Dw6F-SA0.js",
+      "_@inertiajs-BHNbm3Fi.js",
       "_darkmode-BEaTfPzm.js",
       "_@element-plus-7OHurGuN.js",
-      "_@inertiajs-BHNbm3Fi.js",
+      "_moment-C5S46NFB.js",
+      "__plugin-vue_export-helper-DlAUqK2U.js",
+      "_ApplicationLogo-D133QDgo.js",
+      "_@kurkle-D8fDXNIl.js",
       "_deepmerge-DOl302Ur.js",
       "_call-bind-apply-helpers-D2lLUVvI.js",
       "_function-bind-CHqF18-c.js",
@@ -1829,10 +1853,7 @@
       "_side-channel-weakmap-8WVUVGFG.js",
       "_axios-upsvKRUO.js",
       "_lodash.clonedeep-jBCF3Pnn.js",
-      "_lodash.isequal-v2OLR2rF.js",
-      "_moment-C5S46NFB.js",
-      "__plugin-vue_export-helper-DlAUqK2U.js",
-      "_ApplicationLogo-D133QDgo.js"
+      "_lodash.isequal-v2OLR2rF.js"
     ]
   },
   "resources/js/Pages/Error.vue": {
@@ -2001,7 +2022,7 @@
     ]
   },
   "resources/js/app.js": {
-    "file": "assets/app-DbdWwtV8.js",
+    "file": "assets/app-C7ybJygB.js",
     "name": "app",
     "src": "resources/js/app.js",
     "isEntry": true,
@@ -2085,7 +2106,7 @@
       "resources/js/Pages/Profile/Partials/UpdateProfileInformationForm.vue"
     ],
     "css": [
-      "assets/app-DOMZMV6N.css"
+      "assets/app-18XK4Byp.css"
     ]
   }
 }
