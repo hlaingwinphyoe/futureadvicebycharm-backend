@@ -30,6 +30,7 @@ class PostResource extends JsonResource
             'votes' => $this->votes,
             'views' => $this->formatNumber($this->post_views()->count()),
             'poster_url' =>  $this->poster ? asset('storage/' . $this->poster) : null,
+            'updated_at' => $this->updated_at ? $this->updated_at->toIso8601String() : null,
         ];
     }
 }

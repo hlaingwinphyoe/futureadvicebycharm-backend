@@ -282,4 +282,20 @@ class PostController extends Controller
             return $this->sendError($e->getMessage(), 500);
         }
     }
+
+    public function getAllPosts()
+    {
+        try {
+            $posts = Post::with('user', 'category', 'tags')
+                ->published()
+                ->orderBy('id', 'desc')
+                ->get();
+
+            $posts = PostResource::collection($posts);
+
+            return $this->sendResponse($posts, 'Success!');
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), 500);
+        }
+    }
 }

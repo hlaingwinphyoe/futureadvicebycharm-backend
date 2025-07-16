@@ -23,6 +23,8 @@ Route::controller(PostController::class)->group(function () {
     Route::get('/posts-list/{id}/recommended', 'getRecommendedPosts');
     Route::get('/popular-posts', 'getPopularPosts');
 
+    Route::get('/all-posts', 'getAllPosts');
+
     Route::get('/posts/{id}/votes', 'upVoteDownVote');
     Route::post('/posts/{id}/votes/store', 'upVoteDownVoteStore')->middleware('auth:sanctum');
 

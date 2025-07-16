@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Artisan;
+use App\Jobs\GenerateSitemapJob;
 
 class PostController extends Controller
 {
@@ -95,6 +97,9 @@ class PostController extends Controller
 
             DB::commit();
 
+            // Dispatch sitemap generation job
+            GenerateSitemapJob::dispatch();
+
             return redirect()->route('admin.posts.index')->with('success', 'Successfully Created.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -148,6 +153,10 @@ class PostController extends Controller
             }
 
             DB::commit();
+
+            // Dispatch sitemap generation job
+            GenerateSitemapJob::dispatch();
+            // Artisan::call('sitemap:generate');
 
             return redirect()->route('admin.posts.index')->with('success', 'Successfully Updated.');
         } catch (\Exception $e) {
