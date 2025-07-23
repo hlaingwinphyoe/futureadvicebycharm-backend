@@ -142,7 +142,7 @@ class DashboardController extends Controller
             posts.created_at
         ')
             ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
-            ->groupBy('posts.id', 'posts.title', 'posts.created_at')
+            ->groupBy('posts.id', 'posts.title', 'posts.poster', 'posts.created_at')
             ->orderByDesc('view_count')
             ->limit(5)
             ->get()
