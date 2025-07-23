@@ -66,6 +66,23 @@
                             />
                         </el-form-item>
                         <el-form-item
+                            label="Slug"
+                            prop="slug"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: 'Slug is required',
+                                    trigger: 'blur',
+                                },
+                            ]"
+                        >
+                            <el-input v-model="form.slug" />
+                            <InputError
+                                class="mt-2"
+                                :message="$page.props.errors.slug"
+                            />
+                        </el-form-item>
+                        <el-form-item
                             label="Category"
                             :rules="[
                                 {
@@ -167,6 +184,7 @@ export default {
             virtualForm: new FormData(),
             form: {
                 title: props.post.title ?? "",
+                slug: props.post.slug ?? "",
                 category: props.post.category_id ?? "",
                 desc: props.post.desc ?? "",
                 tags: props.post ? props.post.tags.map((a) => a.slug) : [],
@@ -200,6 +218,7 @@ export default {
                 if (valid) {
                     state.isLoading = true;
                     state.virtualForm.append("title", state.form.title);
+                    state.virtualForm.append("slug", state.form.slug);
                     state.virtualForm.append("category", state.form.category);
                     state.virtualForm.append("tags", state.form.tags);
                     state.virtualForm.append("desc", state.form.desc);

@@ -71,6 +71,7 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|string|min:3',
+            'slug' => 'required|string|min:3',
             'category' => 'required|numeric|exists:categories,id',
             'desc' => 'required|string|min:10',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:10240',
@@ -122,6 +123,7 @@ class PostController extends Controller
     {
         $request->validate([
             'title' => 'required|string|min:3',
+            'slug' => 'required|string|min:3',
             'category' => 'required|numeric|exists:categories,id',
             'desc' => 'required|string|min:10',
             'poster' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp,svg|max:10240',

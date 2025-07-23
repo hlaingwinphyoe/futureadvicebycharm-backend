@@ -47,7 +47,7 @@
                             :message="$page.props.errors.poster"
                         />
                     </el-form-item>
-                    <div class="grid grid-cols-3 gap-4">
+                    <div class="grid grid-cols-2 gap-4">
                         <el-form-item
                             label="Title"
                             prop="title"
@@ -62,7 +62,24 @@
                             <el-input v-model="form.title" />
                             <InputError
                                 class="mt-2"
-                                :message="$page.props.errors.name"
+                                :message="$page.props.errors.title"
+                            />
+                        </el-form-item>
+                        <el-form-item
+                            label="Slug"
+                            prop="slug"
+                            :rules="[
+                                {
+                                    required: true,
+                                    message: 'Slug is required',
+                                    trigger: 'blur',
+                                },
+                            ]"
+                        >
+                            <el-input v-model="form.slug" />
+                            <InputError
+                                class="mt-2"
+                                :message="$page.props.errors.slug"
                             />
                         </el-form-item>
                         <el-form-item
@@ -111,6 +128,10 @@
                                     :value="item.slug"
                                 />
                             </el-select>
+                            <InputError
+                                class="mt-2"
+                                :message="$page.props.errors.tags"
+                            />
                         </el-form-item>
                     </div>
                     <div class="mb-5">
@@ -163,6 +184,7 @@ export default {
             virtualForm: new FormData(),
             form: {
                 title: "",
+                slug: "",
                 category: "",
                 desc: "",
                 tags: [],
@@ -195,6 +217,7 @@ export default {
                 if (valid) {
                     state.isLoading = true;
                     state.virtualForm.append("title", state.form.title);
+                    state.virtualForm.append("slug", state.form.slug);
                     state.virtualForm.append("category", state.form.category);
                     state.virtualForm.append("desc", state.form.desc);
                     state.virtualForm.append("tags", state.form.tags);
@@ -215,6 +238,7 @@ export default {
         const resetForm = (formRef) => {
             formRef.resetFields();
             state.form.title = "";
+            state.form.slug = "";
             state.form.category = "";
             state.form.desc = "";
             state.form.tags = [];

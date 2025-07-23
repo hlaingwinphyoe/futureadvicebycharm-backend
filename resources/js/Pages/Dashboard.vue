@@ -18,16 +18,14 @@ const { analytics } = usePage().props;
 
     <AuthenticatedLayout>
         <div class="p-4 container mx-auto overflow-x-auto">
-            <div class="ml-2">
+            <div class="mb-3">
                 <h4 class="text-lg font-bold">Dashboard</h4>
-                <p class="text-sm mb-3">
-                    Key metrics and performance insights
-                </p>
+                <p class="text-sm">Key metrics and performance insights</p>
             </div>
-            <div class="p-4 index-content">
+            <div class="p-1 index-content">
                 <!-- Stats Cards -->
                 <div
-                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+                    class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-6"
                 >
                     <StatsCard
                         title="Total Users"
@@ -56,7 +54,7 @@ const { analytics } = usePage().props;
                 </div>
 
                 <!-- Monthly Stats -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
                     <StatsCard
                         title="Monthly Appointments"
                         :value="analytics.overview.monthly_appointments"
@@ -78,40 +76,40 @@ const { analytics } = usePage().props;
                 </div>
 
                 <!-- User Registration and Post View Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
                     <RecentActivity
                         :appointments="
                             analytics.recent_activity.recent_appointments
                         "
                     />
+                    <PopularPosts :posts="analytics.analytics.popular_posts" />
+                </div>
+
+                <!-- Revenue and Appointment Status Charts -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
+                    <RevenueChart :data="analytics.trends.appointment_trends" />
                     <UserRegistrationChart
                         :data="analytics.trends.user_registration_trends"
                     />
                 </div>
 
-                <!-- Revenue and Appointment Status Charts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                    <RevenueChart :data="analytics.trends.appointment_trends" />
-                    <AppointmentStatusChart
-                        :data="
-                            analytics.analytics.appointment_status_distribution
-                        "
-                    />
-                </div>
-
                 <!-- Revenue by Package Chart -->
-                <div class="mb-8">
+                <div class="mb-6">
                     <RevenueByPackageChart
                         :data="analytics.analytics.revenue_by_package"
                     />
                 </div>
 
                 <!-- Recent Activity and Popular Posts -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
                     <PostViewChart
                         :data="analytics.analytics.post_view_trends"
                     />
-                    <PopularPosts :posts="analytics.analytics.popular_posts" />
+                    <AppointmentStatusChart
+                        :data="
+                            analytics.analytics.appointment_status_distribution
+                        "
+                    />
                 </div>
             </div>
         </div>

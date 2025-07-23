@@ -10,22 +10,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-use Spatie\Sluggable\HasSlug;
-use Spatie\Sluggable\SlugOptions;
 use Illuminate\Support\Str;
 
 class Post extends Model
 {
-    use HasFactory, HasSlug, SoftDeletes;
+    use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-    public function getSlugOptions(): SlugOptions
-    {
-        return SlugOptions::create()
-            ->generateSlugsFrom('title')
-            ->saveSlugsTo('slug');
-    }
+    // public function getSlugOptions(): SlugOptions
+    // {
+    //     return SlugOptions::create()
+    //         ->generateSlugsFrom('title')
+    //         ->saveSlugsTo('slug');
+    // }
 
     public function category(): BelongsTo
     {

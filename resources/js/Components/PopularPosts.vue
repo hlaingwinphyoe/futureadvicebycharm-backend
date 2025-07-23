@@ -1,29 +1,25 @@
 <template>
     <div class="bg-transparent rounded shadow-lg border border-[#363638] p-6">
         <h3 class="text-lg font-semibold mb-4">Popular Posts</h3>
-        <div class="space-y-4">
+        <div class="divide-y divide-gray-200 dark:divide-gray-700">
             <div
                 v-for="(post, index) in posts"
                 :key="index"
-                class="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                class="flex items-center justify-between p-4 gap-4"
             >
                 <div class="flex items-center space-x-3">
                     <div class="flex-shrink-0">
-                        <div
-                            class="w-8 h-8 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center"
-                        >
-                            <span
-                                class="text-sm font-medium text-purple-600 dark:text-purple-400"
-                            >
-                                {{ index + 1 }}
-                            </span>
-                        </div>
+                        <img
+                            :src="post.poster"
+                            class="h-8 w-10 object-cover rounded"
+                            :alt="post.title"
+                        />
                     </div>
                     <div class="flex-1 min-w-0">
-                        <p class="text-sm font-medium truncate">
+                        <p class="text-sm font-medium line-clamp-1">
                             {{ post.title }}
                         </p>
-                        <p class="text-xs">
+                        <p class="text-xs text-gray-500">
                             {{ formatDate(post.created_at) }}
                         </p>
                     </div>

@@ -9,10 +9,24 @@
                     class="flex items-center justify-end gap-4 xl:gap-0 mt-2 mb-5"
                 >
                     <div>
+                        <el-select
+                            v-model="param.type"
+                            placeholder="Select"
+                            filterable
+                            style="width: 240px"
+                        >
+                            <el-option
+                                v-for="item in types"
+                                :key="item.slug"
+                                :label="item.name"
+                                :value="item.slug"
+                            />
+                        </el-select>
                         <el-input
                             v-model="param.search"
                             style="width: 200px"
                             placeholder="Search Feedback"
+                            class="ml-3"
                         />
                         <el-button type="danger" @click="reset" class="ml-3">
                             <el-icon>
@@ -34,9 +48,27 @@
                                 <h5 class="font-semibold">
                                     {{ scope.row.name }}
                                 </h5>
+                                <small>{{ scope.row.email }}</small>
                             </template>
                         </el-table-column>
-                        <el-table-column prop="email" label="Email" />
+                        <el-table-column label="Rating">
+                            <template #default="scope">
+                                <el-rate
+                                    v-model="scope.row.rating"
+                                    disabled
+                                    show-text
+                                    show-score
+                                    :max="5"
+                                />
+                            </template>
+                        </el-table-column>
+                        <el-table-column label="Type">
+                            <template #default="scope">
+                                <el-tag effect="plain" type="info">
+                                    {{ scope.row.type }}
+                                </el-tag>
+                            </template>
+                        </el-table-column>
                         <el-table-column prop="message" label="Message" />
                         <el-table-column
                             prop="created_at"
@@ -44,7 +76,7 @@
                             sortable
                             align="center"
                         />
-                        <el-table-column label="Actions">
+                        <!-- <el-table-column label="Actions">
                             <template #default="scope">
                                 <el-tooltip
                                     class="box-item"
@@ -61,7 +93,7 @@
                                     </el-button>
                                 </el-tooltip>
                             </template>
-                        </el-table-column>
+                        </el-table-column> -->
                     </el-table>
                     <div class="my-5 flex items-center justify-center">
                         <el-pagination
@@ -105,7 +137,16 @@ export default {
                 page: 1,
                 page_size: 10,
                 search: "",
+                type: "",
             },
+            types: [
+                { id: 1, name: "All", slug: "all" },
+                { id: 2, name: "General Feedback", slug: "feedback" },
+                { id: 3, name: "Suggestion", slug: "suggestion" },
+                { id: 4, name: "Service Quality", slug: "service" },
+                { id: 5, name: "Reading Accuracy", slug: "reading" },
+                { id: 6, name: "Website Experience", slug: "website" },
+            ],
         });
 
         const onSizeChange = (val) => {
@@ -155,6 +196,13 @@ export default {
             }, 500)
         );
 
+        watch(
+            () => state.param.type,
+            debounce(() => {
+                getData();
+            }, 500)
+        );
+
         const getData = () => {
             state.isLoading = true;
             router.get("/admin/feedback", state.param, {
@@ -168,7 +216,7 @@ export default {
         };
 
         const reset = () => {
-            router.get(route("admin.feedback.index"));
+            router.get(route("admin.feedback"));
         };
 
         return {
