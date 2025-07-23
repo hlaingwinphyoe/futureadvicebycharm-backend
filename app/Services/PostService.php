@@ -13,6 +13,7 @@ class PostService
     {
         $post = Post::create([
             'title' => $paramData['title'],
+            'slug' => Str::slug($paramData['slug']),
             'desc' => $paramData['desc'],
             'category_id' => $paramData['category'],
             'excerpt' => Str::words($paramData['desc'], 100),
@@ -40,6 +41,7 @@ class PostService
     {
         $post->update([
             'title' => $paramData['title'],
+            'slug' => Str::slug($paramData['slug']),
             'desc' => $paramData['desc'],
             'category_id' => $paramData['category'],
             'excerpt' => Str::words($paramData['desc'], 50),

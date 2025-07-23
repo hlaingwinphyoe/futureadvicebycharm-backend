@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
-use App\Models\ContactMessage;
+use App\Models\Feedback;
 use App\Models\Package;
 use App\Models\Post;
 use App\Models\User;
 use App\Models\PostView;
-use App\Models\UpvoteDownVote;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
@@ -33,8 +31,6 @@ class DashboardController extends Controller
         $startOfYear = $now->startOfYear();
 
         // Optimized: Get all counts in single queries with proper conditions
-        $totalUsers = User::count();
-        $totalAppointments = Appointment::count();
         $totalPackages = Package::count();
         $totalPosts = Post::count();
 
@@ -104,7 +100,6 @@ class DashboardController extends Controller
             COUNT(*) as view_count
         ')
             ->join('posts', 'post_views.post_id', '=', 'posts.id')
-            ->where('posts.is_published', true)
             ->where('post_views.created_at', '>=', $now->subMonths(6))
             ->groupBy('month')
             ->orderBy('month')
@@ -142,18 +137,19 @@ class DashboardController extends Controller
         // Optimized: Get popular posts with single query
         $popularPosts = Post::selectRaw('
             posts.title,
+            posts.poster,
             COUNT(post_views.id) as view_count,
             posts.created_at
         ')
             ->leftJoin('post_views', 'posts.id', '=', 'post_views.post_id')
-            ->where('posts.is_published', true)
             ->groupBy('posts.id', 'posts.title', 'posts.created_at')
             ->orderByDesc('view_count')
-            ->limit(3)
+            ->limit(5)
             ->get()
             ->map(function ($item) {
                 return [
                     'title' => $item->title,
+                    'poster' => $item->poster ? asset('storage/' . $item->poster) : null,
                     'view_count' => (int) $item->view_count,
                     'created_at' => $item->created_at->format('M d, Y')
                 ];
@@ -178,7 +174,7 @@ class DashboardController extends Controller
         // Optimized: Get recent appointments with eager loading
         $recentAppointments = Appointment::with(['user', 'status'])
             ->latest()
-            ->limit(3)
+            ->limit(5)
             ->get()
             ->map(function ($appointment) {
                 return [
@@ -224,7 +220,7 @@ class DashboardController extends Controller
     public function feedback()
     {
         $pageSize = request('page_size') ?: 10;
-        $feedback = ContactMessage::query()
+        $feedback = Feedback::query()
             ->filterOn()
             ->paginate($pageSize)
             ->withQueryString()
@@ -233,6 +229,8 @@ class DashboardController extends Controller
                 'name' => $item->name,
                 'email' => $item->email,
                 'message' => $item->message,
+                'rating' => $item->rating,
+                'type' => $item->type,
                 'created_at' => $item->created_at->diffForHumans(),
             ]);
 
@@ -243,7 +241,7 @@ class DashboardController extends Controller
 
     public function feedbackDestroy($id)
     {
-        $feedback = ContactMessage::findOrFail($id);
+        $feedback = Feedback::findOrFail($id);
 
         $feedback->delete();
 

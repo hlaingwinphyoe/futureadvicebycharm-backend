@@ -43,7 +43,7 @@ Route::controller(FrontController::class)->group(function () {
     Route::get('/packages-all', 'getPackagesAll');
 
     Route::get('/categories-list', 'getCategories');
-    Route::post('/send-message', 'sendMessage');
+    Route::post('/send-feedback', 'sendFeedback');
     Route::get('/get-info', 'getInfo');
 });
 

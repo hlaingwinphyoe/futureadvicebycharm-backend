@@ -9,7 +9,7 @@ use App\Http\Resources\PackageResource;
 use App\Http\Resources\ZodiacResource;
 use App\Models\Bank;
 use App\Models\Category;
-use App\Models\ContactMessage;
+use App\Models\Feedback;
 use App\Models\Package;
 use App\Models\Status;
 use App\Models\SystemInfo;
@@ -107,23 +107,27 @@ class FrontController extends Controller
         return $this->sendResponse($categories, 'Success!');
     }
 
-    public function sendMessage(Request $request)
+    public function sendFeedback(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => "required|email|max:255",
             'message' => 'required|string',
+            'rating' => 'required|integer|min:1|max:5',
+            'type' => "required|string|in:feedback,suggestion,service,reading,website"
         ]);
 
-        $contact = DB::transaction(function () use ($request) {
-            ContactMessage::create([
+        $feedback = DB::transaction(function () use ($request) {
+            Feedback::create([
                 'name' => $request->name,
                 'email' => $request->email,
                 'message' => $request->message,
+                'rating' => $request->rating,
+                'type' => $request->type,
             ]);
         });
 
-        return $this->sendResponse($contact, 'Success!');
+        return $this->sendResponse($feedback, 'Success!');
     }
 
     public function getInfo()

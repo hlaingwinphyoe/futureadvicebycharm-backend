@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ContactMessage extends Model
+class Feedback extends Model
 {
-    protected $table = 'contact_messages';
+    protected $table = 'feedback';
+
     protected $guarded = [];
 
     public function scopeFilterOn($q)
@@ -15,6 +16,13 @@ class ContactMessage extends Model
             $q->where('name', 'like', '%' . request('search') . '%')
                 ->orWhere('email', 'like', '%' . request('search') . '%')
                 ->orWhere('message', 'like', '%' . request('search') . '%');
+        }
+
+        if (request('type')) {
+            if (request('type') === 'all') {
+                return $q;
+            }
+            $q->where('type', request('type'));
         }
     }
 }
