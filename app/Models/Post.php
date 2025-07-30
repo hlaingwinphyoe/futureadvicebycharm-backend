@@ -65,8 +65,7 @@ class Post extends Model
     public function scopeFilterOn($query)
     {
         if (request('search')) {
-            $query->where('title', 'like', '%' . request('search') . '%')
-                ->orWhere('desc', 'like', '%' . request('search') . '%');
+            $query->whereAny(['title', 'desc', 'slug'], 'like', '%' . request('search') . '%');
         }
 
         if (request('category')) {
