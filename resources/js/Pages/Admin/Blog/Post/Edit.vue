@@ -136,12 +136,12 @@
                     </div>
                     <div class="mb-5">
                         <p class="mb-1.5">Description</p>
-                        <el-input
+                        <!-- <el-input
                             type="textarea"
                             :rows="5"
                             v-model="form.desc"
-                        />
-                        <!-- <MyEditor v-model="form.desc" /> -->
+                        /> -->
+                        <MyEditor v-model="form.desc" />
                         <InputError
                             class="mt-2"
                             :message="$page.props.errors.desc"
@@ -169,11 +169,13 @@ import InputError from "@/Components/InputError.vue";
 import { Back } from "@element-plus/icons-vue";
 import { router, usePage } from "@inertiajs/vue3";
 import { ElMessage } from "element-plus";
+import MyEditor from "@/Components/MyEditor.vue";
 export default {
     props: ["categories", "post", "tags"],
     components: {
         AuthenticatedLayout,
         InputError,
+        MyEditor,
         Back,
     },
     setup(props) {

@@ -13,6 +13,7 @@
                             :src="post.poster"
                             class="h-8 w-10 object-cover rounded"
                             :alt="post.title"
+                            loading="lazy"
                         />
                     </div>
                     <div class="flex-1 min-w-0">

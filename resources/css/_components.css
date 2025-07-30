@@ -11,19 +11,26 @@
         @apply absolute -translate-x-[50%] -translate-y-[50%] top-[50%] left-[47%];
     }
 
-    .is-active {
-        @apply bg-gray-100 hover:bg-gray-100 text-primary-700;
+    .editor-tab-active {
+        @apply bg-primary-500 text-primary-100;
     }
 
     .editor-header {
-        @apply flex items-center flex-wrap gap-x-3 border-t border-l border-r rounded-t border-[#dcdfe6] p-3;
+        @apply flex items-center flex-wrap gap-x-3 border-t border-l border-r rounded-t border-gray-500 p-2;
     }
 
     .editor-body {
-        @apply border border-[#dcdfe6] rounded rounded-t-none px-4 min-h-[12rem] max-h-[12rem] overflow-y-auto prose max-w-none;
+        @apply border border-gray-500 rounded rounded-t-none px-4 min-h-[12rem] max-h-[12rem] overflow-y-auto prose max-w-none text-black dark:text-white;
     }
 
     .editor-btn {
-        @apply px-2 py-0.5 hover:bg-gray-200 rounded-sm font-bold;
+        @apply px-2 py-0.5 hover:bg-gray-500 rounded-sm font-bold text-sm;
+    }
+
+    .editor-body
+        :where(h1, h2, h3):not(
+            :where([class~="not-prose"], [class~="not-prose"] *)
+        ) {
+        @apply text-black dark:text-white;
     }
 }
