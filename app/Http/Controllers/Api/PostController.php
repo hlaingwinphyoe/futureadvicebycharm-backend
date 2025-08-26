@@ -170,6 +170,7 @@ class PostController extends Controller
                     'posts.category_id',
                     'posts.desc',
                     'posts.created_at',
+                    'posts.poster',
                     // DB::raw('ANY_VALUE(`posts`.`desc`) as `desc`'), // Escape `desc`
                     // DB::raw('ANY_VALUE(posts.created_at) as created_at'),
                     DB::raw('count(post_views.id) as view_count') // Aggregate function
@@ -184,6 +185,7 @@ class PostController extends Controller
                     'posts.category_id',
                     'posts.desc',
                     'posts.created_at',
+                    'posts.poster',
                 )
                 ->orderByDesc('view_count')
                 ->limit(5)
