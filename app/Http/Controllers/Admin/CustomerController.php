@@ -25,7 +25,8 @@ class CustomerController extends Controller
                 'email' => $customer->email,
                 'phone' => $customer->phone,
                 'disabled' => $customer->disabled,
-                'profile' => $customer->profile
+                'profile' => $customer->profile,
+                'created_at' => $customer->created_at->format('d M, Y'),
             ]);
 
         return Inertia::render('Admin/Customer/Index', [
