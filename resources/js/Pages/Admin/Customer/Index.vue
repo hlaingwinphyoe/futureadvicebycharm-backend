@@ -64,6 +64,7 @@
                                 </el-tag>
                             </template>
                         </el-table-column>
+                        <el-table-column prop="created_at" label="Joined At" />
                         <el-table-column label="Actions">
                             <template #default="scope">
                                 <el-tooltip
