@@ -15,7 +15,7 @@ class SystemInfoSeeder extends Seeder
     public function run(): void
     {
         $info = SystemInfo::create([
-            'name' => "Tarot By Charm",
+            'name' => "Future Advice by Charm",
             'address' => "Chatuchak, Bangkok, Thailand"
         ]);
 
