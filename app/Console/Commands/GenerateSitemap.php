@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Http;
 class GenerateSitemap extends Command
 {
     protected $signature = 'sitemap:generate';
-    protected $description = 'Generate the sitemap for tarotbycharm.com';
+    protected $description = 'Generate the sitemap for futureadvicebycharm.com';
 
     public function handle()
     {
@@ -23,49 +23,49 @@ class GenerateSitemap extends Command
 
         // Static pages
         $sitemap->add(
-            Url::create('https://tarotbycharm.com/')
+            Url::create('https://futureadvicebycharm.com/')
                 ->setLastModificationDate($lastmod)
                 ->setChangeFrequency($changefreq)
                 ->setPriority($priority)
         );
         $sitemap->add(
-            Url::create('https://tarotbycharm.com/about')
+            Url::create('https://futureadvicebycharm.com/about')
                 ->setLastModificationDate($lastmod)
                 ->setChangeFrequency($changefreq)
                 ->setPriority($priority)
         );
         $sitemap->add(
-            Url::create('https://tarotbycharm.com/contact')
+            Url::create('https://futureadvicebycharm.com/contact')
                 ->setLastModificationDate($lastmod)
                 ->setChangeFrequency($changefreq)
                 ->setPriority($priority)
         );
         $sitemap->add(
-            Url::create('https://tarotbycharm.com/blogs')
+            Url::create('https://futureadvicebycharm.com/blogs')
                 ->setLastModificationDate($lastmod)
                 ->setChangeFrequency($changefreq)
                 ->setPriority($priority)
         );
         $sitemap->add(
-            Url::create('https://tarotbycharm.com/zodiacs')
+            Url::create('https://futureadvicebycharm.com/zodiacs')
                 ->setLastModificationDate($lastmod)
                 ->setChangeFrequency($changefreq)
                 ->setPriority($priority)
         );
         $sitemap->add(
-            Url::create('https://tarotbycharm.com/packages')
+            Url::create('https://futureadvicebycharm.com/packages')
                 ->setLastModificationDate($lastmod)
                 ->setChangeFrequency($changefreq)
                 ->setPriority($priority)
         );
 
         // today special post
-        $specialResponse = Http::get('https://admin.tarotbycharm.com/api/today-special-post');
+        $specialResponse = Http::get('https://admin.futureadvicebycharm.com/api/today-special-post');
         if ($specialResponse->ok()) {
             $special = $specialResponse->json('data');
             if (isset($special['slug'])) {
                 $sitemap->add(
-                    Url::create('https://tarotbycharm.com/blogs/' . $special['slug'])
+                    Url::create('https://futureadvicebycharm.com/blogs/' . $special['slug'])
                         ->setLastModificationDate($lastmod)
                         ->setChangeFrequency($changefreq)
                         ->setPriority($priority)
@@ -74,14 +74,14 @@ class GenerateSitemap extends Command
         }
 
         // Blog posts
-        $response = Http::get('https://admin.tarotbycharm.com/api/all-posts');
+        $response = Http::get('https://admin.futureadvicebycharm.com/api/all-posts');
         if ($response->ok()) {
             $posts = $response->json('data');
             foreach ($posts as $post) {
                 if (isset($post['slug'])) {
                     $lastmodDate = isset($post['updated_at']) ? new \DateTime($post['updated_at']) : $lastmod;
                     $sitemap->add(
-                        Url::create('https://tarotbycharm.com/blogs/' . $post['slug'])
+                        Url::create('https://futureadvicebycharm.com/blogs/' . $post['slug'])
                             ->setLastModificationDate($lastmodDate)
                             ->setChangeFrequency($changefreq)
                             ->setPriority($priority)

@@ -10,7 +10,7 @@ import { createApp, h } from "vue";
 import { ZiggyVue } from "../../vendor/tightenco/ziggy";
 import ElementPlus from "element-plus";
 
-const appName = import.meta.env.VITE_APP_NAME || "Tarot By Charm";
+const appName = import.meta.env.VITE_APP_NAME || "Future Advice by Charm";
 
 createInertiaApp({
     title: (title) => `${title} - ${appName}`,
